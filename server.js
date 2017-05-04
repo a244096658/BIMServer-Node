@@ -19,7 +19,7 @@ var BimServerClient = require('./bimServerJS/bimserverclient');
 // var ifc4 = require('./bimServerJS/ifc4');
 // var Model = require('./bimServerJS/model');
 // var translations = require('./bimServerJS/translations_en');
-// comment -1
+
 
 app.set('port', process.env.PORT || 3000);
 app.use(express.favicon());

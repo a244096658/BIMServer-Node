@@ -29,6 +29,10 @@ app.use(express.static(path.join(__dirname , '/public')));  // set the static fi
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
+//set ejs.
+app.set("view engine", 'ejs');
+app.set('views', __dirname + '/views');
+
 // development only
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
@@ -36,7 +40,8 @@ if ('development' == app.get('env')) {
 
 // GET Requests
 app.get('/', function(req,res,next){
-  res.sendfile('./public/index.html');
+  //res.sendfile('./public/index.html');
+    res.render('home', {name:'ejs!'})
 });
 app.get('/login', function(req,res){
   res.sendfile('./public/login.html')
@@ -45,7 +50,7 @@ app.get('/createProject', function(req,res){
   res.sendfile('./public/createProject.html');
 });
 
-// GET Requests
+// POST Requests
 app.post('/login', api.AuthInterface.login);
 app.post('/createProject', api.ServiceInterface.addProject);
 

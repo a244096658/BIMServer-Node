@@ -22,6 +22,14 @@ app.use(bodyParser.urlencoded({
 }))
 // parse application/json
 app.use(bodyParser.json())
+//set ejs.
+app.set("view engine", 'ejs');
+app.set('views', __dirname + '/views');
+
+//Global variables for storing data from BIMServer
+var projectId=0;
+var allProjects=[];
+var allUsers=[];
 
 
 var AuthInterface = {
@@ -29,10 +37,9 @@ var AuthInterface = {
         var username = req.body.username;
         var password = req.body.password;
         client.login(username, password, function() {
-            var token = client.token
             console.log(client.token);
-            res.redirect('/createProject'); // cilent has a property of token. which is assigned value during .login function.
-            return next()
+            //res.end();
+            //return next()
         }, function(err) {
             console.log(err);
         })
@@ -49,18 +56,100 @@ var ServiceInterface = {
             schema: schema
         }, function(data) {
             console.log(data); // the return data from bimsever is json type.
-            //give user some response, so user will know they create project ok.
-            res.send("ok!");
-            return next()
+            projectId = data.oid;
+             //res.end();
+            //return next()
         }, function(err) {
             console.log(err)
         });
     },
+
+    addProjectAsSubProject:function(req, res, next) {
+        var projectName = req.body.projectName;
+        var schema = req.body.schema;
+        client.call('ServiceInterface', 'addProjectAsSubProject', {
+            projectName: projectName,
+            parentPoid:projectId,
+            schema: schema
+        }, function(data) {
+            console.log(data); // the return data from bimsever is json type.
+             //res.end();
+            //return next()
+        }, function(err) {
+            console.log(err)
+        });
+    },
+
+    getAllProjects:function(req, res, next) {
+        client.call('ServiceInterface', 'getAllProjects', {
+            onlyTopLevel: "false",
+            onlyActive: "false"
+        }, function(data) {
+            console.log(data); // the return data from bimsever is Array[] including json type element.
+            allProjects=data;
+            res.render('pages/checkin',{projects:data,moduleName:["../partials/getAllProjects"]});
+             //res.end();
+            //return next()
+        }, function(err) {
+            console.log(err)
+        });
+    },
+
+    addUserWithPassword:function(req, res, next) {
+        client.call('ServiceInterface', 'addUserWithPassword', {
+            username:req.body.username,
+            password:req.body.password,
+            name:req.body.name,
+            type:req.body.type,
+            selfRegistration:req.body.selfRegistration,
+            resetUrl:req.body.resetUrl
+        }, function(data) {
+            console.log(data); // the return data from bimsever is json type.
+            res.send("Register successfully!");
+             //res.end();
+            //return next()
+        }, function(err) {
+            console.log(err);
+        });
+    },
+
+    getAllUsers:function(req, res, next) {
+        client.call('ServiceInterface', 'getAllUsers', {
+   
+        }, function(data) {
+            console.log(data); // the return data from bimsever is Array[] including json type element.
+            res.render('pages/checkin',{users:data,moduleName:["../partials/getAllUsers"]});
+            allUsers=data;
+             //res.end();
+            //return next()
+        }, function(err) {
+            console.log(err);
+        });
+    },
+
+    addUserToProject:function(req, res, next) {
+        client.call('ServiceInterface', 'addUserToProject', {
+            uoid:req.body.uoid,
+            poid:req.body.poid
+        }, function(data) {
+            console.log(data); // the return data from bimsever is json type.
+             //res.end();
+            //return next()
+        }, function(err) {
+            console.log(err);
+        });
+    },
+
+    showUserAndProject:function(req, res, next) {
+        res.render('pages/checkin',{users:allUsers,projects:allProjects,moduleName:["../partials/getAllProjects","../partials/getAllUsers","../partials/addUserToProject"]});
+    },//This is user-defined for show users and projects. 
+
     getSuggestedDeserializerForExtension: function(req,res,next) {
       //Write Function Here
     }
     //more....
 };
+
 
 exports.AuthInterface = AuthInterface;
 exports.ServiceInterface = ServiceInterface;

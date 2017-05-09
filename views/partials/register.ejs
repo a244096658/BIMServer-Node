@@ -1,0 +1,28 @@
+<!-- Register FORM -->
+<form action="/register" method="post">
+	<div class="formContent">
+		<label>username</label>
+			<input type="text" class="form-control" name="username">
+		<label>password</label>
+			<input type="password" class="form-control" name="password">
+		<label>name</label>
+			<input type="text" class="form-control" name="name">
+
+		<label>type</label>
+			<select name="type">
+				<option value="SYSTEM">SYSTEM</option>
+				<option value="ADMIN">ADMIN</option>
+				<option value="USER">USER</option>
+				<option value="READ_ONLY">READ_ONLY</option>
+			</select><br>
+
+		<label>selfRegistration</label>
+			<input type="checkbox" name="selfRegistration"><br>
+
+		<label>resetUrl</label>
+			<input type="text" class="form-control" name="resetUrl">
+			<br>
+			<button type="submit" class="btn btn-warning">Register</button>
+	</div>
+
+</form>

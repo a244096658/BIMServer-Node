@@ -1,0 +1,28 @@
+<head>
+	<title>Node Authentication</title>
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+	<style>
+
+ 
+	</style>
+	<script>
+        function allowDrop(ev)
+          {
+            ev.preventDefault();
+          }
+
+        function drag(ev)
+          {
+            ev.dataTransfer.setData("Text",ev.target.id);
+          }
+
+        function drop(ev)
+          {
+            ev.preventDefault();
+            var data=ev.dataTransfer.getData("Text");
+            ev.target.value=data;
+          }
+
+	</script>
+</head>

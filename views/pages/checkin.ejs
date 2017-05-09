@@ -1,0 +1,24 @@
+<!-- views/signup.ejs -->
+<!doctype html>
+<html>
+	<% include ../partials/header %>
+	<body>
+        <section name="jumbotron"  >
+            <div class="jumbotron text-center">
+                <h2>BIMServer - Node</h2>
+				<% include ../partials/navigator %>
+            </div>
+        </section>
+
+		<section name="content">
+			<div class="container" >
+				<% if(typeof moduleName!=="undefined"){  %>
+					<% for(var module in moduleName){  %>
+						<%- include(moduleName[module]) %>
+					<% } %>
+				<% } %>
+			</div>
+		</section>
+
+	</body>
+</html>

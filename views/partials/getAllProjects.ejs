@@ -1,0 +1,15 @@
+<!-- getAllProjects FORM -->
+<div id="getAllProjects">
+    <form  action="/getAllProjects" method="post">
+        <button type="submit" class="btn btn-warning ">getAllProjects</button>
+        <hr>
+    </form>
+</div>
+
+<% if(typeof projects!=="undefined"){ %>
+    <ul id="getAllProjectsList">
+        <% for(var i=0;i<projects.length;i+=1){  %>
+            <li draggable="true" ondragstart="drag(event)" id=<%= projects[i].oid %> ><%= projects[i].name %> </li>
+        <% } %>
+    </ul>
+<% }%>

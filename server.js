@@ -4,7 +4,6 @@ var path = require('path');
 var url = require('url');
 var http = require('http');
 var expressJwt = require('express-jwt');
-var routes = require('./routes');
 var api = require('./routes/api');
 var flash = require('connect-flash');
 var app = express();
@@ -39,20 +38,25 @@ if ('development' == app.get('env')) {
 }
 
 // GET Requests
-app.get('/', function(req,res,next){
-  //res.sendfile('./public/index.html');
-    res.render('home', {name:'ejs!'})
-});
-app.get('/login', function(req,res){
-  res.sendfile('./public/login.html')
-});
-app.get('/createProject', function(req,res){
-  res.sendfile('./public/createProject.html');
-});
+app.get('/', function(req,res,next){res.render('pages/checkin')});
+app.get('/login', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/login"]})});
+app.get('/createProject', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/createProject"]})});
+app.get('/createSubProject', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/createSubProject"]})});
+app.get('/register', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/register"]})});
+app.get('/getAllProjects', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/getAllProjects"]})});
+app.get('/getAllUsers', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/getAllUsers"]})});
+app.get('/addUserToProject', api.ServiceInterface.showUserAndProject);
+
+
 
 // POST Requests
 app.post('/login', api.AuthInterface.login);
 app.post('/createProject', api.ServiceInterface.addProject);
+app.post('/createSubProject', api.ServiceInterface.addProjectAsSubProject);
+app.post('/register', api.ServiceInterface.addUserWithPassword );
+app.post('/getAllProjects', api.ServiceInterface.getAllProjects);
+app.post('/getAllUsers', api.ServiceInterface.getAllUsers ); 
+app.post('/addUserToProject', api.ServiceInterface.addUserToProject );
 
 //Server start
 http.createServer(app).listen(app.get('port'), function(req,res){

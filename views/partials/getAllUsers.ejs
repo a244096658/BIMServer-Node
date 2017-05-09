@@ -1,0 +1,15 @@
+<!-- getAllUsers FORM -->
+<div id="getAllUsers">
+    <form  action="/getAllUsers" method="post">
+        <button type="submit" class="btn btn-warning ">getAllUsers</button>
+        <hr>
+    </form>
+</div>
+
+<% if(typeof users!=="undefined"){ %>
+    <ul id="getAllUsersList">
+        <% for(var i=0;i<users.length;i+=1){  %>
+            <li draggable="true" ondragstart="drag(event)" id=<%= users[i].oid %> ><%= users[i].name %> </li>
+        <% } %>
+    </ul>
+<% }%>

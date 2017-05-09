@@ -10,18 +10,22 @@ var bodyParser = require('body-parser');
 var express = require('express');
 var app = express();
 var BimServerClient = require('../bimServerJS/bimserverclient');
-
+var flash = require('connect-flash');
+var expressSession = require('express-session');
+var cookieParser = require('cookie-parser'); // the session is stored in a cookie, so we use this to parse it
 
 // BIM Server Client Connection
 var address = 'http://localhost:8082'
 var client = new BimServerClient(address);
 
+// use flash and session. 
+app.use(express.cookieParser());
+app.use(express.session({ cookie: { maxAge: 60000 }, secret: 'anne#'}));
+app.use(flash());
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({
-    extended: true
-}))
+app.use(bodyParser.urlencoded({extended: true}));
 // parse application/json
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 //set ejs.
 app.set("view engine", 'ejs');
 app.set('views', __dirname + '/views');
@@ -31,17 +35,20 @@ var projectId=0;
 var allProjects=[];
 var allUsers=[];
 
-
 var AuthInterface = {
     login: function(req, res, next) {
         var username = req.body.username;
         var password = req.body.password;
         client.login(username, password, function() {
             console.log(client.token);
+            req.flash('info', 'Login successfully!');
+            res.redirect('/getAllProjects');//Redirect to another page when user successfully login.
             //res.end();
             //return next()
         }, function(err) {
             console.log(err);
+            req.flash('error', JSON.stringify(err));
+            res.redirect('/login');
         })
     }
     //more...

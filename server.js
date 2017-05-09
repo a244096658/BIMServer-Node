@@ -9,22 +9,26 @@ var flash = require('connect-flash');
 var app = express();
 var requirejs = require('requirejs');
 var XMLHttpRequest = require("xhr2");
+var session = require('express-session');
+var cookieParser = require('cookie-parser'); // the session is stored in a cookie, so we use this to parse it
 var BimServerClient = require('./bimServerJS/bimserverclient');
 
+
 app.set('port', process.env.PORT || 3000);
+// use flash and session. 
+app.use(express.cookieParser());
+app.use(express.session({ cookie: { maxAge: 60000 }, secret: 'anne#'}));
+app.use(flash());
+//
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
-//for use with sessions
-app.use(express.cookieParser());
 app.use(express.bodyParser());
 app.use(express.methodOverride());  // simulate DELETE and PUT
-app.use(express.session({ cookie: { maxAge: 60000 }, secret: 'anne#'}));
-// use flash messages
-app.use(flash());
 app.use(app.router);
 app.use(express.static(path.join(__dirname , '/public')));  // set the static files location /public/img will be /img for users
+// use bodyparser
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
@@ -39,11 +43,11 @@ if ('development' == app.get('env')) {
 
 // GET Requests
 app.get('/', function(req,res,next){res.render('pages/checkin')});
-app.get('/login', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/login"]})});
+app.get('/login', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/login"],message: req.flash('error')})});
 app.get('/createProject', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/createProject"]})});
 app.get('/createSubProject', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/createSubProject"]})});
 app.get('/register', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/register"]})});
-app.get('/getAllProjects', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/getAllProjects"]})});
+app.get('/getAllProjects', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/getAllProjects"],message: req.flash('info') })});  
 app.get('/getAllUsers', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/getAllUsers"]})});
 app.get('/addUserToProject', api.ServiceInterface.showUserAndProject);
 

@@ -15,7 +15,7 @@ var BimServerClient = require('./bimServerJS/bimserverclient');
 
 
 app.set('port', process.env.PORT || 3000);
-// use flash and session. 
+// use flash and session.
 app.use(express.cookieParser());
 app.use(express.session({ cookie: { maxAge: 60000 }, secret: 'anne#'}));
 app.use(flash());
@@ -42,14 +42,12 @@ if ('development' == app.get('env')) {
 }
 
 // GET Requests
-app.get('/', function(req,res,next){
-  res.render('pages/checkin',{message:JSON.parse(req.flash('info')).success, message_userType:JSON.parse(req.flash('info')).userType  });
-});
+app.get('/', function(req,res,next){ res.render('pages/checkin',{message:req.flash('info').success, message_userType:req.flash('info').userType}); });
 app.get('/login', function(req,res,next){res.render('pages/mainLogin',{moduleName:["../partials/login"],message: req.flash('error')})});
 app.get('/createProject', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/createProject"]})});
 app.get('/createSubProject', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/createSubProject"]})});
 app.get('/register', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/register"]})});
-app.get('/getAllProjects', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/getAllProjects"] })}); 
+app.get('/getAllProjects', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/getAllProjects"] })});
 app.get('/getSubProjects', api.ServiceInterface.showProjectsAndSubProjects);
 app.get('/getAllUsers', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/getAllUsers"]})});
 app.get('/addUserToProject', api.ServiceInterface.showUserAndProject);
@@ -63,7 +61,7 @@ app.post('/createSubProject', api.ServiceInterface.addProjectAsSubProject);
 app.post('/register', api.ServiceInterface.addUserWithPassword );
 app.post('/getAllProjects', api.ServiceInterface.getAllProjects);
 app.post('/getSubProjects', api.ServiceInterface.getSubProjects);
-app.post('/getAllUsers', api.ServiceInterface.getAllUsers ); 
+app.post('/getAllUsers', api.ServiceInterface.getAllUsers );
 app.post('/addUserToProject', api.ServiceInterface.addUserToProject );
 
 //Server start

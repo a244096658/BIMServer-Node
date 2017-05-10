@@ -18,7 +18,7 @@ var cookieParser = require('cookie-parser'); // the session is stored in a cooki
 var address = 'http://localhost:8082'
 var client = new BimServerClient(address);
 
-// use flash and session. 
+// use flash and session.
 app.use(express.cookieParser());
 app.use(express.session({ cookie: { maxAge: 60000 }, secret: 'anne#'}));
 app.use(flash());
@@ -70,7 +70,7 @@ var AuthInterface = {
     }
 
 
-    
+
 };
 
 
@@ -156,7 +156,7 @@ var ServiceInterface = {
 
     getAllUsers:function(req, res, next) {
         client.call('ServiceInterface', 'getAllUsers', {
-   
+
         }, function(data) {
             console.log(data); // the return data from bimsever is Array[] including json type element.
             res.render('pages/checkin',{users:data,moduleName:["../partials/getAllUsers"]});
@@ -183,11 +183,11 @@ var ServiceInterface = {
 
     showUserAndProject:function(req, res, next) {
         res.render('pages/checkin',{users:allUsers,projects:allProjects,moduleName:["../partials/getAllProjects","../partials/getAllUsers","../partials/addUserToProject"]});
-    },//This is user-defined for show users and projects. 
+    },//This is user-defined for show users and projects.
 
     showProjectsAndSubProjects:function(req, res, next) {
         res.render('pages/checkin',{projects:allProjects,subProjects:subProjects,moduleName:["../partials/getAllProjects","../partials/getSubProjects"]});
-    },//This is user-defined for show projects and subproject form. 
+    },//This is user-defined for show projects and subproject form.
 
     getSuggestedDeserializerForExtension: function(req,res,next) {
       //Write Function Here

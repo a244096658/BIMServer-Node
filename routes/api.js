@@ -58,8 +58,7 @@ var AuthInterface = {
         // var password = req.body.password;
         client.call('AuthInterface', 'getLoggedInUser',{ },function(data) {
             console.log(data.userType);
-            var userType=data.userType;
-            req.flash('info', JSON.stringify({success:'Login successfully!' , userType:userType}));//flash only accept string.
+            req.flash('info', JSON.stringify({"success":"Login successfully!" , "userType":data.userType}));//flash only accept string.
             res.redirect('/');//Redirect to another page when user successfully login.
             //res.end();
             //return next()

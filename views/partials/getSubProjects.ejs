@@ -1,0 +1,18 @@
+<!-- getSubProjects FORM -->
+<div class="form-group">
+    <form  action="/getSubProjects" method="post">
+        <label>poid</label>
+        <input class="form-control" ondrop="drop(event)" ondragover="allowDrop(event)" type="text" name="poid">
+        <br>
+        <button type="submit" class="btn btn-warning ">getSubProjects</button>
+        <hr>
+    </form>
+</div>
+
+<% if(typeof subProjects!=="undefined"){ %>
+    <ul id="getSubProjectsList">
+        <% for(var i=0;i<subProjects.length;i+=1){  %>
+            <li draggable="true" ondragstart="drag(event)" id=<%= subProjects[i].oid %> ><%= subProjects[i].name %> </li>
+        <% } %>
+    </ul>
+<% }%>

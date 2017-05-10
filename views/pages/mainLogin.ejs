@@ -1,4 +1,4 @@
-<!-- views/checkin.ejs -->
+<!-- views/mainLogin.ejs -->
 <!doctype html>
 <html>
 	<% include ../partials/header %>
@@ -6,18 +6,11 @@
         <section name="jumbotron"  >
             <div class="jumbotron text-center">
                 <h2>BIMServer - Node</h2>
-				<% if(typeof message !=="undefined"){ %>
-					<%- include('partials/navigator',{userType:message_userType}) %>
-				<% }%>
+                <form action="/" method="get">
+                    <button type="submit" formmethod="get" formaction="/login" class="btn btn-primary">login</button>
+                </form>
             </div>
         </section>
-
-
-		<% if(typeof message !=="undefined"){ %>
-			<% if(message.length>0){ %>
-				<div class="alert alert-success"><%= message %></div>
-			<% }%>
-		<% }%>
 
 		<section name="content">
 			<div class="container" >

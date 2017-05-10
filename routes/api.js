@@ -33,6 +33,7 @@ app.set('views', __dirname + '/views');
 //Global variables for storing data from BIMServer
 var projectId=0;
 var allProjects=[];
+var subProjects=[];
 var allUsers=[];
 
 var AuthInterface = {
@@ -41,8 +42,25 @@ var AuthInterface = {
         var password = req.body.password;
         client.login(username, password, function() {
             console.log(client.token);
-            req.flash('info', 'Login successfully!');
-            res.redirect('/getAllProjects');//Redirect to another page when user successfully login.
+            //req.flash('info', 'Login successfully!');
+            //res.redirect('/getAllProjects');//Redirect to another page when user successfully login.
+            //res.end();
+            return next(); //when login ok,callback run then goes to next() function so it is getloggedinuser. That is next() refer to getloggedinuser(), so getloggedinuser() become in the callback and the login() and getloggedinuser(). so they chain up.
+        }, function(err) {
+            console.log(err);
+            req.flash('error', JSON.stringify(err));
+            res.redirect('/login');
+        })//,next();
+    },
+
+    getLoggedInUser: function(req, res, next) {
+        // var username = req.body.username;
+        // var password = req.body.password;
+        client.call('AuthInterface', 'getLoggedInUser',{ },function(data) {
+            console.log(data.userType);
+            var userType=data.userType;
+            req.flash('info', JSON.stringify({success:'Login successfully!' , userType:userType}));//flash only accept string.
+            res.redirect('/');//Redirect to another page when user successfully login.
             //res.end();
             //return next()
         }, function(err) {
@@ -51,8 +69,11 @@ var AuthInterface = {
             res.redirect('/login');
         })
     }
-    //more...
+
+
+    
 };
+
 
 var ServiceInterface = {
     addProject: function(req, res, next) {
@@ -89,12 +110,26 @@ var ServiceInterface = {
 
     getAllProjects:function(req, res, next) {
         client.call('ServiceInterface', 'getAllProjects', {
-            onlyTopLevel: "false",
+            onlyTopLevel: "true",//true for get main projects, false for get all projects.
             onlyActive: "false"
         }, function(data) {
             console.log(data); // the return data from bimsever is Array[] including json type element.
             allProjects=data;
             res.render('pages/checkin',{projects:data,moduleName:["../partials/getAllProjects"]});
+             //res.end();
+            //return next()
+        }, function(err) {
+            console.log(err)
+        });
+    },
+
+    getSubProjects:function(req, res, next) {
+        client.call('ServiceInterface', 'getSubProjects', {
+            poid:req.body.poid
+        }, function(data) {
+            console.log(data); // the return data from bimsever is Array[] including json type element.
+            subProjects=data;
+            res.render('pages/checkin',{subProjects:data,moduleName:["../partials/getSubProjects"]});
              //res.end();
             //return next()
         }, function(err) {
@@ -150,6 +185,10 @@ var ServiceInterface = {
     showUserAndProject:function(req, res, next) {
         res.render('pages/checkin',{users:allUsers,projects:allProjects,moduleName:["../partials/getAllProjects","../partials/getAllUsers","../partials/addUserToProject"]});
     },//This is user-defined for show users and projects. 
+
+    showProjectsAndSubProjects:function(req, res, next) {
+        res.render('pages/checkin',{projects:allProjects,subProjects:subProjects,moduleName:["../partials/getAllProjects","../partials/getSubProjects"]});
+    },//This is user-defined for show projects and subproject form. 
 
     getSuggestedDeserializerForExtension: function(req,res,next) {
       //Write Function Here

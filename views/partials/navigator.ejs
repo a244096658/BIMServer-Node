@@ -1,7 +1,20 @@
+
+<% if(userType=="ADMIN"){ %>
 <form action="/" method="get">
-    <button type="submit" formmethod="get" formaction="/login" class="btn btn-primary">login</button>
     <button type="submit" formmethod="get" formaction="/createProject" class="btn btn-primary">createProject</button>
     <button type="submit" formmethod="get" formaction="/getAllProjects" class="btn btn-primary">getAllProjects</button>
+    <button type="submit" formmethod="get" formaction="/getSubProjects" class="btn btn-primary">getSubProjects</button>
     <button type="submit" formmethod="get" formaction="/getAllUsers" class="btn btn-primary">getAllUsers</button>
     <button type="submit" formmethod="get" formaction="/addUserToProject" class="btn btn-primary">addUserToProject</button>
 </form>
+<% }  %>
+
+<% if(userType=="USER"){ %>
+<form action="/" method="get">
+
+    <button type="submit" formmethod="get" formaction="/getAllProjects" class="btn btn-primary">getAllProjects</button>
+
+</form>
+
+
+<% } %>

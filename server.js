@@ -42,23 +42,27 @@ if ('development' == app.get('env')) {
 }
 
 // GET Requests
-app.get('/', function(req,res,next){res.render('pages/checkin')});
-app.get('/login', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/login"],message: req.flash('error')})});
+app.get('/', function(req,res,next){
+  res.render('pages/checkin',{message:JSON.parse(req.flash('info')).success, message_userType:JSON.parse(req.flash('info')).userType  });
+});
+app.get('/login', function(req,res,next){res.render('pages/mainLogin',{moduleName:["../partials/login"],message: req.flash('error')})});
 app.get('/createProject', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/createProject"]})});
 app.get('/createSubProject', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/createSubProject"]})});
 app.get('/register', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/register"]})});
-app.get('/getAllProjects', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/getAllProjects"],message: req.flash('info') })});  
+app.get('/getAllProjects', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/getAllProjects"] })}); 
+app.get('/getSubProjects', api.ServiceInterface.showProjectsAndSubProjects);
 app.get('/getAllUsers', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/getAllUsers"]})});
 app.get('/addUserToProject', api.ServiceInterface.showUserAndProject);
 
 
 
 // POST Requests
-app.post('/login', api.AuthInterface.login);
+app.post('/login', api.AuthInterface.login,api.AuthInterface.getLoggedInUser);
 app.post('/createProject', api.ServiceInterface.addProject);
 app.post('/createSubProject', api.ServiceInterface.addProjectAsSubProject);
 app.post('/register', api.ServiceInterface.addUserWithPassword );
 app.post('/getAllProjects', api.ServiceInterface.getAllProjects);
+app.post('/getSubProjects', api.ServiceInterface.getSubProjects);
 app.post('/getAllUsers', api.ServiceInterface.getAllUsers ); 
 app.post('/addUserToProject', api.ServiceInterface.addUserToProject );
 

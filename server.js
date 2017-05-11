@@ -42,8 +42,13 @@ if ('development' == app.get('env')) {
 }
 
 // GET Requests
-app.get('/', function(req,res,next){ res.render('pages/checkin',{message:req.flash('info').success, message_userType:req.flash('info').userType}); });
-app.get('/login', function(req,res,next){res.render('pages/mainLogin',{moduleName:["../partials/login"],message: req.flash('error')})});
+app.get('/', function(req,res,next){ 
+  res.render('pages/checkin',{message:req.flash('info'),messageUserType:req.session.userType}); 
+ // req.session.userType=null;
+});
+app.get('/login', function(req,res,next){
+  res.render('pages/mainLogin',{moduleName:["../partials/login"],message: req.flash('error')});
+});
 app.get('/createProject', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/createProject"]})});
 app.get('/createSubProject', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/createSubProject"]})});
 app.get('/register', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/register"]})});
@@ -51,7 +56,6 @@ app.get('/getAllProjects', function(req,res,next){res.render('pages/checkin',{mo
 app.get('/getSubProjects', api.ServiceInterface.showProjectsAndSubProjects);
 app.get('/getAllUsers', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/getAllUsers"]})});
 app.get('/addUserToProject', api.ServiceInterface.showUserAndProject);
-
 
 
 // POST Requests

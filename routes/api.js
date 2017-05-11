@@ -42,9 +42,6 @@ var AuthInterface = {
         var password = req.body.password;
         client.login(username, password, function() {
             console.log(client.token);
-            //req.flash('info', 'Login successfully!');
-            //res.redirect('/getAllProjects');//Redirect to another page when user successfully login.
-            //res.end();
             return next(); //when login ok,callback run then goes to next() function so it is getloggedinuser. That is next() refer to getloggedinuser(), so getloggedinuser() become in the callback and the login() and getloggedinuser(). so they chain up.
         }, function(err) {
             console.log(err);
@@ -54,21 +51,16 @@ var AuthInterface = {
     },
 
     getLoggedInUser: function(req, res, next) {
-        // var username = req.body.username;
-        // var password = req.body.password;
         client.call('AuthInterface', 'getLoggedInUser',{ },function(data) {
-            console.log(data.userType);
-            req.flash('info', JSON.stringify({"success":"Login successfully!" , "userType":data.userType}));//flash only accept string.
+            req.flash('info', "Welcome "+ data.name +", login successfully!");//flash for pass login info. flash only accept string but become an array. Thus, req.flash('info') is an array.
+            req.session.userType=data.userType;//Session for pass userType
             res.redirect('/');//Redirect to another page when user successfully login.
-            //res.end();
-            //return next()
         }, function(err) {
             console.log(err);
             req.flash('error', JSON.stringify(err));
             res.redirect('/login');
         })
     }
-
 
 
 };

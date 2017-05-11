@@ -49,13 +49,21 @@ app.get('/', function(req,res,next){
 app.get('/login', function(req,res,next){
   res.render('pages/mainLogin',{moduleName:["../partials/login"],message: req.flash('error')});
 });
-app.get('/createProject', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/createProject"]})});
-app.get('/createSubProject', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/createSubProject"]})});
-app.get('/register', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/register"]})});
-app.get('/getAllProjects', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/getAllProjects"] })});
+app.get('/createProject', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/createProject"],messageUserType:req.session.userType})});
+app.get('/createSubProject', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/createSubProject"],messageUserType:req.session.userType})});
+app.get('/register', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/register"],messageUserType:req.session.userType})});
+app.get('/getAllProjects', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/getAllProjects"],messageUserType:req.session.userType })});
 app.get('/getSubProjects', api.ServiceInterface.showProjectsAndSubProjects);
-app.get('/getAllUsers', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/getAllUsers"]})});
+app.get('/getAllUsers', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/getAllUsers"],messageUserType:req.session.userType})});
 app.get('/addUserToProject', api.ServiceInterface.showUserAndProject);
+
+app.get('/getUsersProjects', function(req,res,next){
+  res.render('pages/checkin',{moduleName:["../partials/getUsersProjects"],messageUserType:req.session.userType});
+});
+app.get('/checkin', function(req,res,next){
+  res.render('pages/checkin',{moduleName:["../partials/checkin"],messageUserType:req.session.userType});
+});
+
 
 
 // POST Requests
@@ -67,7 +75,8 @@ app.post('/getAllProjects', api.ServiceInterface.getAllProjects);
 app.post('/getSubProjects', api.ServiceInterface.getSubProjects);
 app.post('/getAllUsers', api.ServiceInterface.getAllUsers );
 app.post('/addUserToProject', api.ServiceInterface.addUserToProject );
-
+app.post('/getUsersProjects', api.ServiceInterface.getUsersProjects);
+app.post('/checkin', api.ServiceInterface.getSuggestedDeserializerForExtension,api.ServiceInterface.checkin);
 //Server start
 http.createServer(app).listen(app.get('port'), function(req,res){
   console.log('Express server listening on port ' + app.get('port'));

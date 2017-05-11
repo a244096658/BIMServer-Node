@@ -1,0 +1,16 @@
+<!-- getUsersProjects FORM -->
+
+<div>
+    <form  action="/getUsersProjects" method="post">
+        <button type="submit" class="btn btn-warning ">getUsersProjects</button>
+        <hr>
+    </form>
+</div>
+
+<% if(typeof userProjects!=="undefined"){ %>
+    <ul id="getUserProjectsList">
+        <% for(var i=0;i<userProjects.length;i+=1){  %>
+            <li draggable="true" ondragstart="drag(event)" id=<%= userProjects[i].oid %> ><%= userProjects[i].name %> </li>
+        <% } %>
+    </ul>
+<% }%>

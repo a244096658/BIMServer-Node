@@ -9,15 +9,15 @@
 				<% if(typeof messageUserType !=="undefined"){ %>
 					<%- include('../partials/navigator',{userType:messageUserType}) %>
 					
-				<% } %>
+				
             </div>
         </section>
 
-		<% if(typeof message !=="undefined"){ %>
-			<% if(message.length>0){ %>
-				<div class="alert alert-success"><%= message %></div>
+			<% if(typeof message !=="undefined"){ %>
+				<% if(message.length>0){ %>
+					<div class="alert alert-success"><%= message %></div>
+				<% }%>
 			<% }%>
-		<% }%>
 
 		<section name="content">
 			<div class="container" >
@@ -26,8 +26,12 @@
 						<%- include(moduleName[module]) %>
 					<% } %>
 				<% } %>
+
+				<% } %>
 			</div>
 		</section>
+
+		<% console.log(messageUserType) %>
 
 	</body>
 </html>

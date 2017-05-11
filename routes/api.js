@@ -54,6 +54,7 @@ var AuthInterface = {
         client.call('AuthInterface', 'getLoggedInUser',{ },function(data) {
             req.flash('info', "Welcome "+ data.name +", login successfully!");//flash for pass login info. flash only accept string but become an array. Thus, req.flash('info') is an array.
             req.session.userType=data.userType;//Session for pass userType
+            req.session.uoid = data.oid;//Session for pass userId
             res.redirect('/');//Redirect to another page when user successfully login.
         }, function(err) {
             console.log(err);
@@ -106,7 +107,7 @@ var ServiceInterface = {
         }, function(data) {
             console.log(data); // the return data from bimsever is Array[] including json type element.
             allProjects=data;
-            res.render('pages/checkin',{projects:data,moduleName:["../partials/getAllProjects"]});
+            res.render('pages/checkin',{projects:data,moduleName:["../partials/getAllProjects"],messageUserType:req.session.userType});
              //res.end();
             //return next()
         }, function(err) {
@@ -120,7 +121,7 @@ var ServiceInterface = {
         }, function(data) {
             console.log(data); // the return data from bimsever is Array[] including json type element.
             subProjects=data;
-            res.render('pages/checkin',{subProjects:data,moduleName:["../partials/getSubProjects"]});
+            res.render('pages/checkin',{subProjects:data,moduleName:["../partials/getSubProjects"],messageUserType:req.session.userType});
              //res.end();
             //return next()
         }, function(err) {
@@ -151,7 +152,7 @@ var ServiceInterface = {
 
         }, function(data) {
             console.log(data); // the return data from bimsever is Array[] including json type element.
-            res.render('pages/checkin',{users:data,moduleName:["../partials/getAllUsers"]});
+            res.render('pages/checkin',{users:data,moduleName:["../partials/getAllUsers"],messageUserType:req.session.userType});
             allUsers=data;
              //res.end();
             //return next()
@@ -174,17 +175,58 @@ var ServiceInterface = {
     },
 
     showUserAndProject:function(req, res, next) {
-        res.render('pages/checkin',{users:allUsers,projects:allProjects,moduleName:["../partials/getAllProjects","../partials/getAllUsers","../partials/addUserToProject"]});
+        res.render('pages/checkin',{users:allUsers,projects:allProjects,moduleName:["../partials/getAllProjects","../partials/getAllUsers","../partials/addUserToProject"],messageUserType:req.session.userType});
     },//This is user-defined for show users and projects.
 
     showProjectsAndSubProjects:function(req, res, next) {
-        res.render('pages/checkin',{projects:allProjects,subProjects:subProjects,moduleName:["../partials/getAllProjects","../partials/getSubProjects"]});
+        res.render('pages/checkin',{projects:allProjects,subProjects:subProjects,moduleName:["../partials/getAllProjects","../partials/getSubProjects"],messageUserType:req.session.userType});
     },//This is user-defined for show projects and subproject form.
 
-    getSuggestedDeserializerForExtension: function(req,res,next) {
-      //Write Function Here
+    getUsersProjects:function(req, res, next) {
+        client.call('ServiceInterface', 'getUsersProjects', {
+            uoid:req.session.uoid
+        }, function(data) {
+            console.log(data); // the return data from bimsever is Array[] including json type element.
+            //var userProjects=data;
+            res.render('pages/checkin',{userProjects:data,moduleName:["../partials/getUsersProjects"],messageUserType:req.session.userType});
+             //res.end();
+            //return next()
+        }, function(err) {
+            console.log(err)
+        });
+    },
+
+    getSuggestedDeserializerForExtension: function(req, res, next) {
+        client.call('ServiceInterface', 'getSuggestedDeserializerForExtension', {
+            extension:"ifc",//file.extension,
+            poid:req.body.poid
+        }, function(data) {
+            console.log(data); // the return data from bimsever is Array[] including json type element.
+            return next()
+        }, function(err) {
+            console.log(err)
+        });
+    },
+
+
+    checkin:function(req, res, next) {
+        client.call('ServiceInterface', 'checkin', {
+            poid:req.body.poid,
+            comment:req.body.comment,
+            deserializerOid:req.body.deserializerOid,
+            fileSize:"",
+            fileName:"",
+            data:"",
+            merge:req.body.merge,
+            sync:req.body.sync
+        }, function(data) {
+            console.log(data); // the return data from bimsever is Array[] including json type element.
+           
+        }, function(err) {
+            console.log(err)
+        });
     }
-    //more....
+
 };
 
 

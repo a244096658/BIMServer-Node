@@ -6,15 +6,16 @@
     <button type="submit" formmethod="get" formaction="/getSubProjects" class="btn btn-primary">getSubProjects</button>
     <button type="submit" formmethod="get" formaction="/getAllUsers" class="btn btn-primary">getAllUsers</button>
     <button type="submit" formmethod="get" formaction="/addUserToProject" class="btn btn-primary">addUserToProject</button>
+    <button type="submit" formmethod="get" formaction="/checkin" class="btn btn-primary">checkin</button>
 </form>
 <% }  %>
 
 <% if(userType=="USER"){ %>
 <form action="/" method="get">
-
-    <button type="submit" formmethod="get" formaction="/getAllProjects" class="btn btn-primary">getAllProjects</button>
-
+    <button type="submit" formmethod="get" formaction="/getUsersProjects" class="btn btn-primary">getUsersProjects</button>
+    <button type="submit" formmethod="get" formaction="/checkin" class="btn btn-primary">checkin</button>
 </form>
 
 
 <% } %>
+

@@ -1,4 +1,5 @@
 var express = require('express');
+var fileUpload = require('express-fileupload');
 var bodyParser = require('body-parser');
 var path = require('path');
 var url = require('url');
@@ -31,10 +32,11 @@ app.use(express.static(path.join(__dirname , '/public')));  // set the static fi
 // use bodyparser
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
-
 //set ejs.
 app.set("view engine", 'ejs');
 app.set('views', __dirname + '/views');
+//Use fileupload from client side.
+app.use(fileUpload());
 
 // development only
 if ('development' == app.get('env')) {

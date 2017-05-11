@@ -1,6 +1,6 @@
 <!-- checkinIFC FORM -->
 <div id="checkinIFC">
-    <form  action="/checkin" method="post">
+    <form  action="/checkin" method="post" encType="multipart/form-data">
         <div class="form-group">
             <label>poid</label>
             <input type="text" class="form-control" name="poid">
@@ -8,10 +8,17 @@
             <label>comment</label>
             <input type="text" class="form-control" name="comment">
 
-            <label>poid</label>
-            <input type="file" class="form-control" name="file">
+            <label>file</label>
+            <input type="file" class="form-control" name="IFCfile">
+
+            <label>merge</label>
+            <input type="checkbox" name="merge"><br>
+
+            <label>sync</label>
+            <input type="checkbox" name="sync"><br>
+
 
         </div>
-            <button type="submit" class="btn btn-warning ">checkin</button>
+            <input type="submit" class="btn btn-warning " value="checkin">
     </form>
 </div>

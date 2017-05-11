@@ -8,6 +8,7 @@ var http = require('http');
 var requirejs = require('requirejs');
 var bodyParser = require('body-parser');
 var express = require('express');
+var fileUpload = require('express-fileupload');
 var app = express();
 var BimServerClient = require('../bimServerJS/bimserverclient');
 var flash = require('connect-flash');
@@ -29,6 +30,8 @@ app.use(bodyParser.json());
 //set ejs.
 app.set("view engine", 'ejs');
 app.set('views', __dirname + '/views');
+//Use fileupload from client side.
+app.use(fileUpload());
 
 //Global variables for storing data from BIMServer
 var projectId=0;
@@ -197,12 +200,13 @@ var ServiceInterface = {
     },
 
     getSuggestedDeserializerForExtension: function(req, res, next) {
-        client.call('ServiceInterface', 'getSuggestedDeserializerForExtension', {
+        client.call('ServiceInterface', 'getSuggestedDeserializerForExtension', {   
             extension:"ifc",//file.extension,
             poid:req.body.poid
         }, function(data) {
             console.log(data); // the return data from bimsever is Array[] including json type element.
-            return next()
+            var deserializerOid = data.oid;
+            return next();
         }, function(err) {
             console.log(err)
         });
@@ -210,22 +214,28 @@ var ServiceInterface = {
 
 
     checkin:function(req, res, next) {
-        client.call('ServiceInterface', 'checkin', {
-            poid:req.body.poid,
-            comment:req.body.comment,
-            deserializerOid:req.body.deserializerOid,
-            fileSize:"",
-            fileName:"",
-            data:"",
-            merge:req.body.merge,
-            sync:req.body.sync
-        }, function(data) {
-            console.log(data); // the return data from bimsever is Array[] including json type element.
+        // var stats = fs.statSync(path.parse(req.body.file));
+        // var readFile=fs.readFileSync(path.parse(req.body.file));
+        
+        console.log(req.files.IFCfile.data);
+
+        // client.call('ServiceInterface', 'checkin', {
+        //     poid:req.body.poid,
+        //     comment:req.body.comment,
+        //     deserializerOid:deserializerOid,
+        //     fileSize:stats.size,//This three processed in server by just file address passed in . 
+        //     fileName:path.parse(req.body.file).name,
+        //     data:new Buffer(readFile).toString('base64'),//calculate the file base64.
+        //     merge:req.body.merge,
+        //     sync:req.body.sync
+        // }, function(data) {
+        //     console.log(data); // the return data from bimsever is Array[] including json type element.
            
-        }, function(err) {
-            console.log(err)
-        });
+        // }, function(err) {
+        //     console.log(err)
+        // });
     }
+
 
 };
 

@@ -1,5 +1,5 @@
 var express = require('express');
-var fileUpload = require('express-fileupload');
+//var fileUpload = require('express-fileupload');
 var bodyParser = require('body-parser');
 var path = require('path');
 var url = require('url');
@@ -13,7 +13,7 @@ var XMLHttpRequest = require("xhr2");
 var session = require('express-session');
 var cookieParser = require('cookie-parser'); // the session is stored in a cookie, so we use this to parse it
 var BimServerClient = require('./bimServerJS/bimserverclient');
-
+var base64 = require('file-base64');
 
 app.set('port', process.env.PORT || 3000);
 // use flash and session.
@@ -28,7 +28,8 @@ app.use(express.urlencoded());
 app.use(express.bodyParser());
 app.use(express.methodOverride());  // simulate DELETE and PUT
 app.use(app.router);
-app.use(express.static(path.join(__dirname , '/public')));  // set the static files location /public/img will be /img for users
+app.use(express.static(path.join(__dirname,'./public')));   // set the static files location /public/img will be /img for users.__dirname is D:\GitLibrary\BIMServer_Node\BIMServer-Node\
+//app.use(fileUpload());
 // use bodyparser
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
@@ -36,7 +37,7 @@ app.use(bodyParser.json())
 app.set("view engine", 'ejs');
 app.set('views', __dirname + '/views');
 //Use fileupload from client side.
-app.use(fileUpload());
+
 
 // development only
 if ('development' == app.get('env')) {

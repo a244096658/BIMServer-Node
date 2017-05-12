@@ -8,13 +8,12 @@ var http = require('http');
 var requirejs = require('requirejs');
 var bodyParser = require('body-parser');
 var express = require('express');
-var fileUpload = require('express-fileupload');
+var base64 = require('file-base64');
 var app = express();
 var BimServerClient = require('../bimServerJS/bimserverclient');
 var flash = require('connect-flash');
 var expressSession = require('express-session');
 var cookieParser = require('cookie-parser'); // the session is stored in a cookie, so we use this to parse it
-
 // BIM Server Client Connection
 var address = 'http://localhost:8082'
 var client = new BimServerClient(address);
@@ -27,11 +26,12 @@ app.use(flash());
 app.use(bodyParser.urlencoded({extended: true}));
 // parse application/json
 app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname,'../public'))); //Must use path.join()
+//app.use(fileUpload());
 //set ejs.
 app.set("view engine", 'ejs');
-app.set('views', __dirname + '/views');
+app.set('views', __dirname + '/views');//May be wrong.
 //Use fileupload from client side.
-app.use(fileUpload());
 
 //Global variables for storing data from BIMServer
 var projectId=0;
@@ -200,40 +200,47 @@ var ServiceInterface = {
     },
 
     getSuggestedDeserializerForExtension: function(req, res, next) {
+        //var IFCfile = req.files.IFCfile.data;
+        console.log(req.files);
+        fs.readFile(req.files.IFCfile.path, function(err,data){
+            var uploadPath = path.join(__dirname,'../public',req.files.IFCfile.name);
+            fs.writeFile(uploadPath,data,function(err){
+                console.log(err);
+            })
+        })
         client.call('ServiceInterface', 'getSuggestedDeserializerForExtension', {   
             extension:"ifc",//file.extension,
             poid:req.body.poid
         }, function(data) {
             console.log(data); // the return data from bimsever is Array[] including json type element.
-            var deserializerOid = data.oid;
-            return next();
+            res.locals.deserializerOid = data.oid;
+            next();
         }, function(err) {
             console.log(err)
         });
     },
 
 
-    checkin:function(req, res, next) {
-        // var stats = fs.statSync(path.parse(req.body.file));
-        // var readFile=fs.readFileSync(path.parse(req.body.file));
-        
-        console.log(req.files.IFCfile.data);
+    checkin:function(req, res, next) {   
+        base64.encode(path.join(__dirname,'../public',req.files.IFCfile.name), function(err, base64String) {
+            client.call('ServiceInterface', 'checkin', {
+                poid:req.body.poid,
+                comment:req.body.comment,
+                deserializerOid: res.locals.deserializerOid,
+                fileSize:req.files.IFCfile.size,//This three processed in server by just file address passed in . 
+                fileName:req.files.IFCfile.name,
+                data:base64String,//calculate the file base64.
+                merge:req.body.merge,
+                sync:req.body.sync
+            }, function(data) {
+                console.log('checkin result: '+data); // the return data from bimsever is Array[] including json type element.
+            
+            }, function(err) {
+                console.log(err)
+            });
 
-        // client.call('ServiceInterface', 'checkin', {
-        //     poid:req.body.poid,
-        //     comment:req.body.comment,
-        //     deserializerOid:deserializerOid,
-        //     fileSize:stats.size,//This three processed in server by just file address passed in . 
-        //     fileName:path.parse(req.body.file).name,
-        //     data:new Buffer(readFile).toString('base64'),//calculate the file base64.
-        //     merge:req.body.merge,
-        //     sync:req.body.sync
-        // }, function(data) {
-        //     console.log(data); // the return data from bimsever is Array[] including json type element.
-           
-        // }, function(err) {
-        //     console.log(err)
-        // });
+        });  
+
     }
 
 

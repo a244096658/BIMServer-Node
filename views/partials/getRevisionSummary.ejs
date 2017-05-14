@@ -1,0 +1,35 @@
+<!-- getRevisionSummary FORM -->
+
+<div>
+    <form  action="/getRevisionSummary" method="post">
+        <label>poid</label>
+        <input type="text" class="form-control" name="poid">
+        <button type="submit" class="btn btn-warning ">getRevisionSummary</button>
+        <hr>
+    </form>
+</div>
+
+
+<% if(typeof IFCEntities!=="undefined"){ %>
+    <table border="1">
+        <% for(var i in IFCEntities.objects){ %> <%# IFCEntities is {"objects":[...]}. So we use IFCEntities.objects to access the actuall data%>
+            <tr>
+                <% for(var j in IFCEntities.objects[i]){ %>
+                    <th><%= j %></th>
+                <% } %>
+            </tr>
+
+            <tr>
+                <% for(var j in IFCEntities.objects[i]){ %>
+                    <td><%= IFCEntities.objects[i][j] %></td>
+                <% } %>
+            </tr>
+
+        <% } %>
+    </table>
+<% }%>
+
+
+
+
+

@@ -47,7 +47,7 @@ if ('development' == app.get('env')) {
 // GET Requests
 app.get('/', function(req,res,next){ 
   res.render('pages/checkin',{message:req.flash('info'),messageUserType:req.session.userType}); 
- // req.session.userType=null;
+//  req.session.userType=null;
 });
 app.get('/login', function(req,res,next){
   res.render('pages/mainLogin',{moduleName:["../partials/login"],message: req.flash('error')});
@@ -67,6 +67,9 @@ app.get('/checkin', function(req,res,next){
   res.render('pages/checkin',{moduleName:["../partials/checkin"],messageUserType:req.session.userType});
 });
 
+app.get('/getRevisionSummary', function(req,res,next){
+  res.render('pages/checkin',{moduleName:["../partials/getRevisionSummary"],messageUserType:req.session.userType});
+});
 
 
 // POST Requests
@@ -80,7 +83,10 @@ app.post('/getAllUsers', api.ServiceInterface.getAllUsers );
 app.post('/addUserToProject', api.ServiceInterface.addUserToProject );
 app.post('/getUsersProjects', api.ServiceInterface.getUsersProjects);
 app.post('/checkin', api.ServiceInterface.getSuggestedDeserializerForExtension,api.ServiceInterface.checkin);
+app.post('/getRevisionSummary', api.ServiceInterface.getAllRevisionsOfProject,api.ServiceInterface.getProjectByPoid,api.ServiceInterface.getRevisionSummary,api.PluginInterface.getSerializerByPluginClassName,api.ServiceInterface.download,api.ServiceInterface.downloadServlet,api.NotificationRegistryInterface.getProgress,api.ServiceInterface.cleanupLongAction);
 //Server start
+
+
 http.createServer(app).listen(app.get('port'), function(req,res){
   console.log('Express server listening on port ' + app.get('port'));
 });

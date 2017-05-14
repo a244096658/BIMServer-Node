@@ -9,11 +9,14 @@ var requirejs = require('requirejs');
 var bodyParser = require('body-parser');
 var express = require('express');
 var base64 = require('file-base64');
+var needle = require('needle');
 var app = express();
 var BimServerClient = require('../bimServerJS/bimserverclient');
 var flash = require('connect-flash');
 var expressSession = require('express-session');
 var cookieParser = require('cookie-parser'); // the session is stored in a cookie, so we use this to parse it
+var ProgressBar = require('progress');
+var https = require('https');
 // BIM Server Client Connection
 var address = 'http://localhost:8082'
 var client = new BimServerClient(address);
@@ -233,7 +236,7 @@ var ServiceInterface = {
                 merge:req.body.merge,
                 sync:req.body.sync
             }, function(data) {
-                console.log('checkin result: '+data); // the return data from bimsever is Array[] including json type element.
+                console.log('checkin result: '+data); // the return data from bimsever is a topicId
             
             }, function(err) {
                 console.log(err)
@@ -241,11 +244,216 @@ var ServiceInterface = {
 
         });  
 
-    }
+    },
+
+    getAllRevisionsOfProject:function(req, res, next) {   
+        client.call('ServiceInterface', 'getAllRevisionsOfProject', {
+            poid:req.body.poid
+        }, function(data) {
+            console.log(data); // the return data from bimsever is Array[] including json type element.
+            res.locals.poid = data[data.length-1].projectId;//return data is a array. projectId in each element is same.
+            //console.log(data.projectId);
+            next();
+        
+        }, function(err) {
+            console.log(err)
+        });
+
+    },
+
+    getProjectByPoid:function(req, res, next) {   
+        client.call('ServiceInterface', 'getProjectByPoid', {
+            poid:res.locals.poid
+        }, function(data) {
+            console.log(data); // the return data from bimsever is Array[] including json type element.
+            res.locals.roid = data.revisions[data.revisions.length-1];//We need the last revision in the array.
+            next();
+        
+        }, function(err) {
+            console.log(err)
+        });
+
+
+
+    },
+
+
+    getRevisionSummary:function(req, res, next) {   
+        client.call('ServiceInterface', 'getRevisionSummary', {
+            roid:res.locals.roid
+        }, function(data) {
+            console.log(data); // the return data from bimsever is Array[] including IFCGroups.
+            res.locals.revisionSummary = data;
+            next();
+        
+        }, function(err) {
+            console.log(err)
+        });
+    },
+
+    //Generate download topicId, for later downloaddata use. 
+    download:function(req, res, next) {
+        // var IFCGroupName=[];   
+        // for(var i in res.locals.revisionSummary.list){ 
+        //     for(var j in res.locals.revisionSummary.list[i].types){ 
+        //         IFCGroupName.push(String.raw`{"type":"`+res.locals.revisionSummary.list[i].types[j].name+String.raw`"}`);
+        //     } 
+        // };
+        // var querystring=String.raw`{"queries":[`+IFCGroupName.join(',')+']}';
+        // console.log(querystring);
+        var IFCGroupName=[];   
+        for(var i in res.locals.revisionSummary.list){ 
+            for(var j in res.locals.revisionSummary.list[i].types){ 
+                IFCGroupName.push(res.locals.revisionSummary.list[i].types[j].name);
+            } 
+        };
+
+        //Full IFC types query sometimes get stuck but sometimes just smoothly execute. Not sure why?
+        var querystring=JSON.stringify({"types":IFCGroupName});
+
+        console.log(querystring);
+
+        var query1 = '{"types": ["IfcDoor", "IfcWindow","IfcBeam","IfcBuilding","IfcBuildingStorey","IfcCovering"]}' // {"types": ["IfcDoor", "IfcWindow"]}  //Current use: {"queries":[{"type":"IfcSpace"}]}
+        //var queryBase64 = new Buffer(query1).toString('base64');
+
+        client.call('ServiceInterface', 'download', {
+            roids:[res.locals.roid],//This roids type should be array.
+            query:queryBase64,//"{\"queries\":[{\"type\":\"IfcSpace\"},{\"type\":\"IfcSlab\"}]}",
+            serializerOid:res.locals.serializerOid,
+            sync:false
+
+        }, function(data) {
+            console.log(data); // the return data from bimsever is a topicId.
+            res.locals.topicId=data;
+            next();
+        
+        }, function(err) {
+            console.log(err)
+        });
+
+    },
+
+
+    //Download option1: using BIMSie api. Data response is base64 encoded. It is slow and cause block sometimes when processing large files.
+    getDownloadData:function(req, res, next) {
+        client.call('ServiceInterface', 'getDownloadData', {
+            topicId:res.locals.topicId
+        }, function(data) {
+
+            //client.registerProgressHandler(res.locals.topicId,function(a,b){console.log(b)}); 
+            
+            var IFCEntities=new Buffer(data.file, 'base64').toString('ascii');//
+            console.log('getting downloaded data');
+            console.log(data.file.length);
+            console.log(IFCEntities);//data is{file:base64 data}. So data.file is the base64 encoded IFCEntities data, then we decode base64 to utf8 string.         
+            //res.render('pages/checkin',{IFCEntities:JSON.parse(IFCEntities),moduleName:["../partials/getRevisionSummary"],messageUserType:req.session.userType});
+            next();
+        
+        }, function(err) {
+            console.log(err)
+        });
+
+    },
+
+
+    //Download option2: using direct HTTP request. Data response is json. It has better ability when processing large files.
+    downloadServlet:function(req, res, next) {
+        var data = {token:client.token,topicId:res.locals.topicId,serializerOid:res.locals.serializerOid};
+        var url = `http://localhost:8082/download?token=${data.token}&serializerOid=${data.serializerOid}]&topicId=${data.topicId}`;
+        //var path=`/download?token=${data.token}&serializerOid=${data.serializerOid}]&topicId=${data.topicId}`
+        //Download option2, HTTP download, response data is json type instead of base64 encoded which is by getDownloadData() method. 
+        needle.get(url, function(error, response) {
+        if (!error && response.statusCode == 200){
+            console.log(response.body);//it is {objects:[...]}, it is json format not base64 so different from the response data using api call.
+            var IFCEntities = response.body;//response.body is json type.
+            //res.render to html as table.
+            res.render('pages/checkin',{IFCEntities:IFCEntities,moduleName:["../partials/getRevisionSummary"],messageUserType:req.session.userType});
+            fs.writeFile(path.join(__dirname,'../public','bim.txt'),JSON.stringify(IFCEntities),function(err){
+                console.log(err);
+            })
+
+            next();
+        }else if(error){console.log(error)}
+        });
+
+    },
+
+    cleanupLongAction:function(req, res, next) {
+        client.call('ServiceInterface', 'cleanupLongAction', {
+            topicId:res.locals.topicId
+        }, function(data) {
+            console.log(data); // the return data from bimsever is empty.
+            console.log('cleanupLongAction successfully!');
+            
+        }, function(err) {
+            console.log(err)
+        });
+
+    },
+
 
 
 };
 
 
+
+
+ var PluginInterface={
+     getSerializerByPluginClassName:function(req, res, next) {   
+        client.call('PluginInterface', 'getSerializerByPluginClassName', {
+            pluginClassName:"org.bimserver.serializers.JsonStreamingSerializerPlugin"
+        }, function(data) {
+            console.log(data); // the return data from bimsever is Array[] including json type element.
+            res.locals.serializerOid = data.oid;
+            next();
+        
+        }, function(err) {
+            console.log(err)
+        });
+
+    },
+
+
+ }
+
+ var NotificationRegistryInterface={
+
+    registerProgressHandler:function(req, res, next) {
+        client.call("NotificationRegistryInterface", "registerProgressHandler", {topicId: res.locals.topicId, endPointId: client.webSocket.endPointId}, function(){
+            next();
+            client.call("NotificationRegistryInterface", "getProgress", {
+                topicId: res.locals.topicId
+            }, function(data){
+                console.log('The title is '+data.title+', the state is '+data.state);
+            });
+        });
+    },
+
+    //Get progress state by topicId. e.g: checkin, download...
+    getProgress:function(req, res, next) {
+        client.call("NotificationRegistryInterface", "getProgress", {
+            topicId: res.locals.topicId
+        }, function(data){
+            console.log(data);
+            console.log( res.locals.topicId);
+            next();
+        }, function(err) {
+            console.log(err)
+        });
+ 
+
+
+    },
+
+ }
+
+ 
+
+ 			 
+ 
+
+
 exports.AuthInterface = AuthInterface;
 exports.ServiceInterface = ServiceInterface;
+exports.PluginInterface = PluginInterface;
+exports.NotificationRegistryInterface=NotificationRegistryInterface;

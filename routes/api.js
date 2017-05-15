@@ -17,6 +17,10 @@ var expressSession = require('express-session');
 var cookieParser = require('cookie-parser'); // the session is stored in a cookie, so we use this to parse it
 var ProgressBar = require('progress');
 var https = require('https');
+var neo4j = require("neo4j-driver").v1;
+var driver = neo4j.driver("bolt://localhost", neo4j.auth.basic("neo4j", "250daowohao"));
+var session = driver.session();
+
 // BIM Server Client Connection
 var address = 'http://localhost:8082'
 var client = new BimServerClient(address);
@@ -293,18 +297,11 @@ var ServiceInterface = {
 
     //Generate download topicId, for later downloaddata use. 
     download:function(req, res, next) {
-        // var IFCGroupName=[];   
-        // for(var i in res.locals.revisionSummary.list){ 
-        //     for(var j in res.locals.revisionSummary.list[i].types){ 
-        //         IFCGroupName.push(String.raw`{"type":"`+res.locals.revisionSummary.list[i].types[j].name+String.raw`"}`);
-        //     } 
-        // };
-        // var querystring=String.raw`{"queries":[`+IFCGroupName.join(',')+']}';
-        // console.log(querystring);
+        //revisionSummary List :[IFCEntities,IFCRelationships,IFCPromitive,Rest]
         var IFCGroupName=[];   
         for(var i in res.locals.revisionSummary.list){ 
-            for(var j in res.locals.revisionSummary.list[i].types){ 
-                IFCGroupName.push(res.locals.revisionSummary.list[i].types[j].name);
+            for(var j in res.locals.revisionSummary.list[0].types){ 
+                IFCGroupName.push(res.locals.revisionSummary.list[0].types[j].name);
             } 
         };
 
@@ -313,12 +310,12 @@ var ServiceInterface = {
 
         console.log(querystring);
 
-        var query1 = '{"types": ["IfcDoor", "IfcWindow","IfcBeam","IfcBuilding","IfcBuildingStorey","IfcCovering"]}' // {"types": ["IfcDoor", "IfcWindow"]}  //Current use: {"queries":[{"type":"IfcSpace"}]}
+        var query1 = '{"types": ["IfcDoor", "IfcWindow","IfcBeam","IfcBuilding","IfcRelContainedInSpatialStructure"]}' // {"types": ["IfcDoor", "IfcWindow"]}  //Current use: {"queries":[{"type":"IfcSpace"}]}
         //var queryBase64 = new Buffer(query1).toString('base64');
 
         client.call('ServiceInterface', 'download', {
             roids:[res.locals.roid],//This roids type should be array.
-            query:queryBase64,//"{\"queries\":[{\"type\":\"IfcSpace\"},{\"type\":\"IfcSlab\"}]}",
+            query:query1,//"{\"queries\":[{\"type\":\"IfcSpace\"},{\"type\":\"IfcSlab\"}]}",
             serializerOid:res.locals.serializerOid,
             sync:false
 
@@ -360,21 +357,46 @@ var ServiceInterface = {
     downloadServlet:function(req, res, next) {
         var data = {token:client.token,topicId:res.locals.topicId,serializerOid:res.locals.serializerOid};
         var url = `http://localhost:8082/download?token=${data.token}&serializerOid=${data.serializerOid}]&topicId=${data.topicId}`;
+        
+        //Array of json object.
+        var IFCEntitiesArray=[];
+        var IFCRelationshipsArray=[];
         //var path=`/download?token=${data.token}&serializerOid=${data.serializerOid}]&topicId=${data.topicId}`
         //Download option2, HTTP download, response data is json type instead of base64 encoded which is by getDownloadData() method. 
         needle.get(url, function(error, response) {
-        if (!error && response.statusCode == 200){
-            console.log(response.body);//it is {objects:[...]}, it is json format not base64 so different from the response data using api call.
-            var IFCEntities = response.body;//response.body is json type.
-            //res.render to html as table.
-            res.render('pages/checkin',{IFCEntities:IFCEntities,moduleName:["../partials/getRevisionSummary"],messageUserType:req.session.userType});
-            fs.writeFile(path.join(__dirname,'../public','bim.txt'),JSON.stringify(IFCEntities),function(err){
-                console.log(err);
-            })
+            if (!error && response.statusCode == 200){
+                //console.log(response.body);//it is {objects:[...]}, it is json format not base64 so different from the response data using api call.
+                var IFCData = response.body;//response.body is json type.Data strcture is: {objects:[...]}
+                for(var i in IFCData.objects){
+                    if(IFCData.objects[i]._t.includes('IfcRel',0)){
+                        IFCRelationshipsArray.push(IFCData.objects[i]);
+                    }else{
+                        IFCEntitiesArray.push(IFCData.objects[i]);
+                    }
+                }
+                
+                //res.render to html as table.
+                res.render('pages/checkin',{IFCEntities:IFCData,moduleName:["../partials/getRevisionSummary"],messageUserType:req.session.userType});
+                res.locals.IFCEntitiesArray=IFCEntitiesArray;
+                res.locals.IFCRelationshipsArray=IFCRelationshipsArray;
+                console.log(IFCEntitiesArray);
+                console.log('------------IFCEntities above------------------IFCRelations below-----------------------')
+                console.log(IFCRelationshipsArray);
 
-            next();
-        }else if(error){console.log(error)}
-        });
+                fs.writeFile(path.join(__dirname,'../public','IFCData.txt'),JSON.stringify(IFCData),function(err){
+                    console.log(err);
+                });  
+
+                // fs.writeFile(path.join(__dirname,'../public','IFCEntities.txt'),IFCEntitiesArray.join(','),function(err){
+                //     console.log(err);
+                // });
+                // fs.writeFile(path.join(__dirname,'../public','IFCRelationships.txt'),IFCRelationshipsArray.join(','),function(err){
+                //     console.log(err);
+                // });              
+
+                next();
+            }else if(error){console.log(error)}
+            });
 
     },
 
@@ -444,6 +466,40 @@ var ServiceInterface = {
 
 
     },
+
+ }
+
+ var Neo4j={
+     cypherMerge:function(req, res, next) {
+         session.run.then.then();
+        session
+        .run(" MERGE (n:Student {   Name:{nameParam} ,ID:{iDParam} ,Material:{materialParam} ,Load:{loadParam} ,Design:{designParam}  }) ",{nameParam:name, iDParam:iD, materialParam:material, loadParam:load, designParam:design}  )
+        .then(function(){
+            return session.run( "MATCH (m:Student)   RETURN m.Name AS ti" )       
+        })
+        .then(function(result){
+            // for(var i in result.records){
+            //   dataArray.push(  result.records[i].get("ti") ); //Push the single data into dataArray
+            //   console.log(result.records[i].get("ti") +"The datatype is "+ typeof result.records[i].get("ti") )
+            // }; 
+
+            // console.log(dataArray);
+            // dataString = dataArray.join(' ');//Swtich the array to string, with connect symbol " " --> <space>
+            // responseDataString = JSON.stringify({"Name":dataString});//Transfer the Json data to its string format.
+
+            session.close();
+            //driver.close();
+
+            console.log("Cypher works");//Catch the running time here for compare neo4j efficient.
+
+        })
+        .catch(function (error) {
+            console.log(error);
+        });       
+
+    },
+
+
 
  }
 

@@ -13,25 +13,123 @@
 //         console.log("Final line");
 //     });
 
-  
+// var request = require("request");
+
+
+
+
+// var options = { method: 'POST',
+//   url: 'http://localhost:7474/db/data/batch',
+//   headers: 
+//    { 'postman-token': '9a92b3ce-492f-6c72-a262-ab09fdca6163',
+//      'cache-control': 'no-cache',
+//      authorization: 'Basic bmVvNGo6MjUwZGFvd29oYW8=',
+//      'content-type': 'application/json',
+//      accept: 'application/json;charset=UTF-8' },
+//   body: 
+//    [ { method: 'POST',
+//        to: '/cypher',
+//        body: 
+//         { query: 'MERGE(n:label  {name:{userId1}, position:{userId2}, oid:{userId2} })   RETURN n',
+//           params: { userId1: '21000001', userId2: '21000002' } },
+//        id: 0 } ],
+//   json: true };
+
+// request(options, function (error, response, body) {
+//   if (error) throw new Error(error);
+
+//   console.log(body);
+// });
+
+// //
+
+var request = require("request");
+
+var options = { method: 'POST',
+  url: 'http://localhost:7474/db/data/batch',
+  headers: 
+   { 'postman-token': '00e6e995-86ac-6463-7883-931a3121b7c8',
+     'cache-control': 'no-cache',
+     authorization: 'Basic bmVvNGo6MjUwZGFvd29oYW8=',
+     'content-type': 'application/json',
+     accept: 'application/json; charset=UTF-8' },
+  body: 
+   [ { method: 'POST', to: '/node', id: 0, body: { name: 'bob' } },
+     { method: 'POST', to: '/node', id: 1, body: { age: 12 } },
+    
+     { method: 'POST',
+       to: '{0}/relationships',
+       id: 3,
+       body: { to: '{1}', data: { since: '2010' }, type: 'KNOWS' } },
+     { method: 'POST',
+       to: '/index/relationship/my_rels',
+       id: 4,
+       body: { key: 'since', value: '2010', uri: '{3}' } },
+     {
+        method : "POST",
+        to : "/cypher",
+        body : {
+        query : "MERGE(n:label  {name:{userId1}, position:{userId2}, oid:{userId2} })   RETURN n",
+        params : {"userId1":"21000001", "userId2":"21000002","label":"Friend"}
+        },
+        id : 8
+    },
+    { method: 'POST', to: '/cypher/8/labels', id: 7, body: 'STUDENT' }  ],
+  json: true };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  console.log(body);
+});
+
+console.log(options)
+
+
+// var request = require("request");
+
+// var props =[ { name: 'Andres', position: 'Developer', label: 'PERSON' },
+//            { name: 'Michael', position: 'Developer', label: 'TEACHER' } ];
+
+// var options = { method: 'POST',
+//   url: 'http://localhost:7474/db/data/cypher',
+//   headers: 
+//    { 'postman-token': '6872f596-0721-6ce5-5363-c199ab586a09',
+//      'cache-control': 'no-cache',
+//      authorization: 'Basic bmVvNGo6MjUwZGFvd29oYW8=',
+//      'content-type': 'application/json',
+//      accept: 'application/json; charset=UTF-8' },
+//   body: 
+//    { params: 
+//       { props: props },
+//      query: `UNWIND {props} AS properties  MERGE(n:${props.label}  {name:properties.name, position:properties.position})  RETURN n` },
+//   json: true };
+
+// request(options, function (error, response, body) {
+//   if (error) throw new Error(error);
+
+//   console.log(body);
+// });
+
+
 
 
 // }
 
 // loop("what",function(a){console.log( a+" a fuck")});
 
-var ProgressBar = require('progress');
-var https = require('https');
-var needle = require('needle');
-var request = require('request');
-var http = require('http');
-var base64 = require('file-base64');
+// var ProgressBar = require('progress');
+// var https = require('https');
+// var needle = require('needle');
+// var request = require('request');
+// var http = require('http');
+// var base64 = require('file-base64');
 
-var data = {token:'ccd33d1dc43cece67f983aca88996bc7b7467eca820378b5346f676fb6395c5cad97f7aa192b214720a03bd7b816a726',topicId:300,serializerOid:262182};
+// var data = {token:'ccd33d1dc43cece67f983aca88996bc7b7467eca820378b5346f676fb6395c5cad97f7aa192b214720a03bd7b816a726',topicId:300,serializerOid:262182};
 
-var url = `http://localhost:8082/download?token=${data.token}&serializerOid=${data.serializerOid}]&topicId=${data.topicId}`;
+// var url = `http://localhost:8082/download?token=${data.token}&serializerOid=${data.serializerOid}]&topicId=${data.topicId}`;
 
-var path=`/download?token=${data.token}&serializerOid=${data.serializerOid}]&topicId=${data.topicId}`
+// var path=`/download?token=${data.token}&serializerOid=${data.serializerOid}]&topicId=${data.topicId}`
 
 
  

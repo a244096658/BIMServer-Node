@@ -298,24 +298,38 @@ var ServiceInterface = {
     //Generate download topicId, for later downloaddata use. 
     download:function(req, res, next) {
         //revisionSummary List :[IFCEntities,IFCRelationships,IFCPromitive,Rest]
-        var IFCGroupName=[];   
-        for(var i in res.locals.revisionSummary.list){ 
-            for(var j in res.locals.revisionSummary.list[0].types){ 
-                IFCGroupName.push(res.locals.revisionSummary.list[0].types[j].name);
-            } 
-        };
+        var IFCGroupName=[];  
+        //for(var i in res.locals.revisionSummary.list){ 
+            //IFCEntities
+            // for(var j in res.locals.revisionSummary.list[0].types){ 
+            //     IFCGroupName.push(res.locals.revisionSummary.list[0].types[j].name);
+            // }; 
+            //IFCRel
+            for(var k in res.locals.revisionSummary.list[1].types){
+                if(res.locals.revisionSummary.list[1].types[k].name!=="IfcRelDefinesByProperties"){ 
+                    IFCGroupName.push(res.locals.revisionSummary.list[1].types[k].name);
+                };
+            }; 
+            //Rest  
+            // for(var r in res.locals.revisionSummary.list[3].types){ 
+            //     IFCGroupName.push(res.locals.revisionSummary.list[3].types[r].name);
+            // };                       
+
+        //};
 
         //Full IFC types query sometimes get stuck but sometimes just smoothly execute. Not sure why?
-        var querystring=JSON.stringify({"types":IFCGroupName});
+        var queryString=JSON.stringify({"types":IFCGroupName});
+        console.log(IFCGroupName);
+ 
 
-        console.log(querystring);
+        //console.log(querystring);
 
-        var query1 = '{"types": ["IfcDoor", "IfcWindow","IfcBeam","IfcBuilding","IfcRelContainedInSpatialStructure"]}' // {"types": ["IfcDoor", "IfcWindow"]}  //Current use: {"queries":[{"type":"IfcSpace"}]}
+        var query1 = '{"types": ["IfcDoor","IfcSpace", "IfcWindow","IfcBeam","IfcBuilding","IfcRelContainedInSpatialStructure"]}' // {"types": ["IfcDoor", "IfcWindow"]}  //Current use: {"queries":[{"type":"IfcSpace"}]}
         //var queryBase64 = new Buffer(query1).toString('base64');
 
         client.call('ServiceInterface', 'download', {
             roids:[res.locals.roid],//This roids type should be array.
-            query:query1,//"{\"queries\":[{\"type\":\"IfcSpace\"},{\"type\":\"IfcSlab\"}]}",
+            query:queryString,//"{\"queries\":[{\"type\":\"IfcSpace\"},{\"type\":\"IfcSlab\"}]}",
             serializerOid:res.locals.serializerOid,
             sync:false
 
@@ -373,20 +387,80 @@ var ServiceInterface = {
                     }else{
                         IFCEntitiesArray.push(IFCData.objects[i]);
                     }
-                }
+                };
+                // var a =[];
+                // for(var o in IFCRelationshipsArray){
+
+
+                // };
                 
                 //res.render to html as table.
-                res.render('pages/checkin',{IFCEntities:IFCData,moduleName:["../partials/getRevisionSummary"],messageUserType:req.session.userType});
+                //res.render('pages/checkin',{IFCEntities:IFCData,moduleName:["../partials/getRevisionSummary"],messageUserType:req.session.userType});
                 res.locals.IFCEntitiesArray=IFCEntitiesArray;
                 res.locals.IFCRelationshipsArray=IFCRelationshipsArray;
-                console.log(IFCEntitiesArray);
+                //console.log(IFCEntitiesArray);
                 console.log('------------IFCEntities above------------------IFCRelations below-----------------------')
                 console.log(IFCRelationshipsArray);
 
                 fs.writeFile(path.join(__dirname,'../public','IFCData.txt'),JSON.stringify(IFCData),function(err){
                     console.log(err);
                 });  
+                
+                //Start
+                //var requiredIFCEntities=[];
+                var requiredOidArray=[];
+                for(var i in  IFCRelationshipsArray){
+                    // var RelatedName="";
+                    // var RelatingName="";
+                    var RelatedName, RelatingName;
+                    for (var key in res.locals.IFCRelationshipsArray[i]) {
+                        if (key.match(/^_rRelated/)){
+                            RelatedName =key; 
+                        }else if (key.match(/^_rRelating/)){
+                            RelatingName =key;
+                        };
+                    };
+                    if(typeof RelatedName != 'undefined' &&typeof RelatingName != 'undefined'){
+                        for(var j in IFCRelationshipsArray[i][RelatedName]){
+                            if(requiredOidArray.indexOf(IFCRelationshipsArray[i][RelatedName][j])===-1){
+                                requiredOidArray.push(IFCRelationshipsArray[i][RelatedName][j]);
+                            };
+                            if(requiredOidArray.indexOf(IFCRelationshipsArray[i][RelatingName])===-1){
+                                requiredOidArray.push(IFCRelationshipsArray[i][RelatingName]);
+                            };
+                        };
+                    };
+                };
+                var queryString2=JSON.stringify({"oids":requiredOidArray});
+                client.call('ServiceInterface', 'download', {
+                    roids:[res.locals.roid],//This roids type should be array.
+                    query:queryString2,//"{\"queries\":[{\"type\":\"IfcSpace\"},{\"type\":\"IfcSlab\"}]}",
+                    serializerOid:res.locals.serializerOid,
+                    sync:false
 
+                }, function(data) {
+                    console.log(data); // the return data from bimsever is a topicId.
+                    var requiredTopicId=data;
+                    var data = {token:client.token,topicId:requiredTopicId,serializerOid:res.locals.serializerOid};
+                    var url = `http://localhost:8082/download?token=${data.token}&serializerOid=${data.serializerOid}]&topicId=${data.topicId}`;
+                    
+                    //Array of json object.
+                    var requiredIFCEntitiesArray=[];
+                    //var path=`/download?token=${data.token}&serializerOid=${data.serializerOid}]&topicId=${data.topicId}`
+                    //Download option2, HTTP download, response data is json type instead of base64 encoded which is by getDownloadData() method. 
+                    needle.get(url, function(error, response) {
+                        if (!error && response.statusCode == 200){
+                            //console.log(response.body);//it is {objects:[...]}, it is json format not base64 so different from the response data using api call.
+                            requiredIFCEntitiesArray = response.body.objects;//response.body is json type.Data strcture is: {objects:[...]}
+                            res.locals.requiredIFCEntitiesArray=requiredIFCEntitiesArray;
+                            next();    
+                        };
+                    });                       
+                }, function(err) {
+                    console.log(err)
+                });                
+
+                //End
                 // fs.writeFile(path.join(__dirname,'../public','IFCEntities.txt'),IFCEntitiesArray.join(','),function(err){
                 //     console.log(err);
                 // });
@@ -394,7 +468,7 @@ var ServiceInterface = {
                 //     console.log(err);
                 // });              
 
-                next();
+                //next();
             }else if(error){console.log(error)}
             });
 
@@ -469,35 +543,261 @@ var ServiceInterface = {
 
  }
 
+//"MERGE(n:trialLabel  { name:'"+res.locals.IFCEntitiesArray[i].Name+"',oid:'"+res.locals.IFCEntitiesArray[i]._i+"',guid:'"+res.locals.IFCEntitiesArray[i].GlobalId+"' })   RETURN n",
  var Neo4j={
-     cypherMerge:function(req, res, next) {
-         session.run.then.then();
-        session
-        .run(" MERGE (n:Student {   Name:{nameParam} ,ID:{iDParam} ,Material:{materialParam} ,Load:{loadParam} ,Design:{designParam}  }) ",{nameParam:name, iDParam:iD, materialParam:material, loadParam:load, designParam:design}  )
-        .then(function(){
-            return session.run( "MATCH (m:Student)   RETURN m.Name AS ti" )       
-        })
-        .then(function(result){
-            // for(var i in result.records){
-            //   dataArray.push(  result.records[i].get("ti") ); //Push the single data into dataArray
-            //   console.log(result.records[i].get("ti") +"The datatype is "+ typeof result.records[i].get("ti") )
-            // }; 
+     batchMerge:function(req, res, next) {
+        var batchNodesArray=[];
+        var batchLabelsArray=[]
+        var batchRelArray=[];
+        var responseArray = [];
+        var internalIdArray = [];
+        var oidArray=[];
 
-            // console.log(dataArray);
-            // dataString = dataArray.join(' ');//Swtich the array to string, with connect symbol " " --> <space>
-            // responseDataString = JSON.stringify({"Name":dataString});//Transfer the Json data to its string format.
+        for(var i in res.locals.requiredIFCEntitiesArray){
+            batchNodesArray.push({ 
+            method: 'POST',
+            to: '/cypher',
+            body: 
+                { query: "MERGE(n { name:'"+res.locals.requiredIFCEntitiesArray[i].Name+"',oid:'"+res.locals.requiredIFCEntitiesArray[i]._i.toString()+"',guid:'"+res.locals.requiredIFCEntitiesArray[i].GlobalId+"' })   RETURN n",
+                params: res.locals.requiredIFCEntitiesArray[i]},
+            id: parseInt(i) });
 
-            session.close();
-            //driver.close();
+            oidArray.push(res.locals.requiredIFCEntitiesArray[i]._i.toString());//correct. string type.
 
-            console.log("Cypher works");//Catch the running time here for compare neo4j efficient.
+        };
 
-        })
-        .catch(function (error) {
-            console.log(error);
-        });       
+        var options = { method: 'POST',
+        url: 'http://localhost:7474/db/data/batch',
+        headers: 
+        { 'postman-token': '9a92b3ce-492f-6c72-a262-ab09fdca6163',
+            'cache-control': 'no-cache',
+            authorization: 'Basic bmVvNGo6MjUwZGFvd29oYW8=',
+            'content-type': 'application/json',
+            accept: 'application/json;charset=UTF-8' },
+        body: batchNodesArray,
+        json: true };
 
+        request(options, function (error, response, body) {
+            if (error) throw new Error(error);
+            console.log(body);
+            responseArray = body;
+            for(var i in responseArray){
+                internalIdArray.push(responseArray[i].body.data[0][0].metadata.id);//correct
+            };
+    
+            for(var i in res.locals.requiredIFCEntitiesArray){
+                batchLabelsArray.push({ 
+                    method: 'POST', to: `/node/${internalIdArray[i]}/labels`, id: parseInt(i), body:res.locals.requiredIFCEntitiesArray[i]._t});
+            };
+
+            var options2 = { method: 'POST',
+            url: 'http://localhost:7474/db/data/batch',
+            headers: 
+            { 'postman-token': '9a92b3ce-492f-6c72-a262-ab09fdca6163',
+                'cache-control': 'no-cache',
+                authorization: 'Basic bmVvNGo6MjUwZGFvd29oYW8=',
+                'content-type': 'application/json',
+                accept: 'application/json;charset=UTF-8' },
+            body: batchLabelsArray,
+            json: true };
+
+                request(options2,function(error,response,body){
+                    if(error) throw new Error(error);
+                    console.log(body);
+                    console.log(internalIdArray);
+                    console.log(oidArray);
+
+                    for(var i in  res.locals.IFCRelationshipsArray){
+                        // var RelatedName="";
+                        // var RelatingName="";
+                        var RelatedName, RelatingName;
+                        for (var key in res.locals.IFCRelationshipsArray[i]) {
+                            if (key.match(/^_rRelated/)){
+                                RelatedName =key; 
+                            }else if (key.match(/^_rRelating/)){
+                                RelatingName =key;
+                            };
+                        };
+
+                            if(typeof RelatedName != 'undefined' &&typeof RelatingName != 'undefined'){
+                                //console.log("Rel names are "+RelatedName+RelatingName);
+ 
+                                for(var j in res.locals.IFCRelationshipsArray[i][RelatedName]){
+
+                                    var indexOidRelatedObj =oidArray.indexOf(res.locals.IFCRelationshipsArray[i][RelatedName][j].toString());
+                                    var internalIdRelatedObj = internalIdArray[indexOidRelatedObj];
+                                    
+                                    var indexOidRelatingdObj =oidArray.indexOf(res.locals.IFCRelationshipsArray[i][RelatingName].toString());
+                                    //var indexOidRelatingdObj =oidArray.indexOf(res.locals.IFCRelationshipsArray[i]);
+                                    var internalIdRelatingObj = internalIdArray[indexOidRelatingdObj];
+                                    //console.log(typeof res.locals.IFCRelationshipsArray[i][RelatedName][j])
+                                    console.log(res.locals.IFCRelationshipsArray[i][RelatingName]);
+                                    //console.log(indexOidRelatingdObj+" is "+internalIdRelatingObj);
+                              
+                                    //Issue: relationship will duplicated
+                                    batchRelArray.push({
+                                        method : "POST",
+                                        to : `/node/${internalIdRelatedObj}/relationships`,
+                                        id : parseInt(i),
+                                        body : {
+                                            to : `/node/${internalIdRelatingObj}`,
+                                            data : {//relationship properties.e.g: since : "2010"
+                                            },
+                                            type : `${res.locals.IFCRelationshipsArray[i]._t}`
+                                            }
+                                        });
+
+                                    batchRelArray.push({
+                                        method : "POST",
+                                        to : `/node/${internalIdRelatingObj}/relationships`,
+                                        id : parseInt(i),
+                                        body : {
+                                            to : `/node/${internalIdRelatedObj}`,
+                                            data : {//relationship properties.e.g: since : "2010"
+                                            },
+                                            type : `${res.locals.IFCRelationshipsArray[i]._t}`
+                                            }
+                                        });
+                                };
+                            };
+                    };   
+
+                    var options3 = { method: 'POST',
+                    url: 'http://localhost:7474/db/data/batch',
+                    headers: 
+                    { 'postman-token': '9a92b3ce-492f-6c72-a262-ab09fdca6163',
+                        'cache-control': 'no-cache',
+                        authorization: 'Basic bmVvNGo6MjUwZGFvd29oYW8=',
+                        'content-type': 'application/json',
+                        accept: 'application/json;charset=UTF-8' },
+                    body: batchRelArray,
+                    json: true };
+
+                    fs.writeFile(path.join(__dirname,'../public','oidArray.txt'),oidArray,function(err){
+                        console.log(err);
+                    });
+
+                        request(options3,function(error,response,body){
+                            if(error) throw new Error(error);
+                            console.log(body);
+
+                        });
+                });          
+        }); 
     },
+
+
+
+
+
+
+
+
+
+
+
+
+
+//     batchCreateUnique:function(req, res, next) {
+//         var batchNodesArray=[];
+//         var batchLabelsArray=[];
+//         var batchRelArray=[];
+//         var responseArray = [];
+//         var internalIdArray = [];
+//         var oidArray = [];
+//         //Make IFCEntities batch body.
+//         for(var i in res.locals.IFCEntitiesArray){
+//             batchNodesArray.push({ 
+//             method: 'POST',
+//             to: '/index/node/concept?uniqueness=get_or_create',
+//             body: 
+//                {key: 'oid',
+//                 value: res.locals.IFCEntitiesArray[i]._i,
+//                 properties: { name: res.locals.IFCEntitiesArray[i].Name, oid:res.locals.IFCEntitiesArray[i]._i, guid:res.locals.IFCEntitiesArray[i].GlobalId }
+//                }, 
+//             id: res.locals.IFCEntitiesArray[i]._i });
+//             //Create oid array. Identical to internalId array.
+//             oidArray.push(res.locals.IFCEntitiesArray[i]._i);//correct. string type.
+
+//         };
+//         //Options for IFCEntities batch.
+//         var options = { method: 'POST',
+//         url: 'http://localhost:7474/db/data/batch',
+//         headers: 
+//         { 'postman-token': '9a92b3ce-492f-6c72-a262-ab09fdca6163',
+//             'cache-control': 'no-cache',
+//             authorization: 'Basic bmVvNGo6MjUwZGFvd29oYW8=',
+//             'content-type': 'application/json',
+//             accept: 'application/json;charset=UTF-8' },
+//         body: batchNodesArray,
+//         json: true };
+//         //Execute IFCEntities batch.
+//         request(options, function (error, response, body) {
+//             if (error) throw new Error(error);
+//             console.log(body);
+//             responseArray = body;   
+//             //Create internalId array.
+//             for(var i in responseArray){
+//                 internalIdArray.push(responseArray[i].body.metadata.id);//Different batch job has different response schema.
+//             };
+//             //Create label batch array.
+//             for(var i in res.locals.IFCEntitiesArray){
+//                 batchLabelsArray.push({ 
+//                     method: 'POST', to: `/node/${internalIdArray[i]}/labels`, id: parseInt(i), body:res.locals.IFCEntitiesArray[i]._t});
+//             };
+//             //Options for assigning label batch
+//             var options2 = { method: 'POST',
+//             url: 'http://localhost:7474/db/data/batch',
+//             headers: 
+//             { 'postman-token': '9a92b3ce-492f-6c72-a262-ab09fdca6163',
+//                 'cache-control': 'no-cache',
+//                 authorization: 'Basic bmVvNGo6MjUwZGFvd29oYW8=',
+//                 'content-type': 'application/json',
+//                 accept: 'application/json;charset=UTF-8' },
+//             body: batchLabelsArray,
+//             json: true };
+//                 //Execute assigning label batch.
+//                 request(options2,function(error,response,body){
+//                     if(error) throw new Error(error);
+//                     console.log(body);
+//                 });
+
+
+//         });   
+
+//    [ { method: 'POST',
+//        to: '/index/node/concept?uniqueness=get_or_create',
+//        id: 0,
+//        body: 
+//         { key: 'oid',
+//           value: '_oid',
+//           properties: { nom: 'organisation' } } },
+//      { method: 'POST',
+//        to: '/index/node/concept?uniqueness=get_or_create',
+//        id: 1,
+//        body: 
+//         { key: 'nom',
+//           value: 'établissement',
+//           properties: { nom: 'établissement' } } },
+//      { method: 'POST',
+//        to: '/cypher',
+//        id: 1,
+//        body: 
+//         { query: 'START a=node:concept(oid={_oid_a}), b=node:concept(oid={_oid_b}) MERGE (a)-[r:test]->(a) ',
+//           params: { _oid_a: 'établissement', _oid_b: 'organisation' } } } ]
+
+// //The address of unique node.         
+// //http://localhost:7474/db/data/index/node/concept/nom/organisation/182
+
+// //The address of normal node
+// //http://localhost:7474/db/data/node/483
+//     },
+
+
+
+
+
+
 
 
 
@@ -513,3 +813,4 @@ exports.AuthInterface = AuthInterface;
 exports.ServiceInterface = ServiceInterface;
 exports.PluginInterface = PluginInterface;
 exports.NotificationRegistryInterface=NotificationRegistryInterface;
+exports.Neo4j=Neo4j;

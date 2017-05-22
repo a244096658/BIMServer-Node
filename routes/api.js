@@ -12,6 +12,8 @@ var base64 = require('file-base64');
 var needle = require('needle');
 var app = express();
 var BimServerClient = require('../bimServerJS/bimserverclient');
+var BIMServerConfigure=require('../configure/BIMServerConfigure');
+var IFCparameterMapping = BIMServerConfigure.IFCparameterMapping;
 var flash = require('connect-flash');
 var expressSession = require('express-session');
 var cookieParser = require('cookie-parser'); // the session is stored in a cookie, so we use this to parse it
@@ -334,7 +336,7 @@ var ServiceInterface = {
             sync:false
 
         }, function(data) {
-            console.log(data); // the return data from bimsever is a topicId.
+            //console.log(data); // the return data from bimsever is a topicId.
             res.locals.topicId=data;
             next();
         
@@ -395,7 +397,7 @@ var ServiceInterface = {
                 res.locals.IFCRelationshipsArray=IFCRelationshipsArray;
                 //console.log(IFCEntitiesArray);
                 console.log('------------IFCEntities above------------------IFCRelations below-----------------------')
-                console.log(IFCRelationshipsArray);
+                //console.log(IFCRelationshipsArray);
 
                 fs.writeFile(path.join(__dirname,'../public','IFCData.txt'),JSON.stringify(IFCData),function(err){
                     console.log(err);
@@ -483,7 +485,33 @@ var ServiceInterface = {
 
  }
 
-//"MERGE(n:trialLabel  { name:'"+res.locals.IFCEntitiesArray[i].Name+"',oid:'"+res.locals.IFCEntitiesArray[i]._i+"',guid:'"+res.locals.IFCEntitiesArray[i].GlobalId+"' })   RETURN n",
+
+//api for Neo4j
+
+// var RESTAPI={
+//     batch:function(body,callback){
+//         var options = { method: 'POST',
+//         url: 'http://localhost:7474/db/data/batch',
+//         headers: 
+//         { 'postman-token': '9a92b3ce-492f-6c72-a262-ab09fdca6163',
+//             'cache-control': 'no-cache',
+//             authorization: 'Basic bmVvNGo6MjUwZGFvd29oYW8=',
+//             'content-type': 'application/json',
+//             accept: 'application/json;charset=UTF-8' },
+//         body: body,
+//         json: true };
+
+//         request(options, function (error, response, body) {
+//             if (error) throw new Error(error);
+//             console.log(body);
+//             callback();
+//         });
+                    
+//     },
+
+// };
+
+// RESTAPI.batch()
  var Neo4j={
      batchMerge:function(req, res, next) {
         var batchNodesArray=[];
@@ -494,12 +522,13 @@ var ServiceInterface = {
         var oidArray=[];
 
         //Step1: Merge nodes.
+        //"MERGE(n { name:'"+res.locals.IFCEntitiesArray[i].Name+"',oid:'"+res.locals.IFCEntitiesArray[i]._i.toString()+"',guid:'"+res.locals.IFCEntitiesArray[i].GlobalId+"' })   RETURN n",
         for(var i in res.locals.IFCEntitiesArray){
             batchNodesArray.push({ 
             method: 'POST',
             to: '/cypher',
             body: 
-                { query: "MERGE(n { name:'"+res.locals.IFCEntitiesArray[i].Name+"',oid:'"+res.locals.IFCEntitiesArray[i]._i.toString()+"',guid:'"+res.locals.IFCEntitiesArray[i].GlobalId+"' })   RETURN n",
+                { query: `MERGE(n { name:"${res.locals.IFCEntitiesArray[i].Name}",oid:"${res.locals.IFCEntitiesArray[i]._i.toString()}",guid:"${res.locals.IFCEntitiesArray[i].GlobalId}" })   RETURN n`,
                 params: res.locals.IFCEntitiesArray[i]},
             id: parseInt(i) });
 
@@ -513,13 +542,14 @@ var ServiceInterface = {
         { 'postman-token': '9a92b3ce-492f-6c72-a262-ab09fdca6163',
             'cache-control': 'no-cache',
             authorization: 'Basic bmVvNGo6MjUwZGFvd29oYW8=',
-            'content-type': 'application/json',
+            'content-type': 'application/json;charset=UTF-8',
             accept: 'application/json;charset=UTF-8' },
         body: batchNodesArray,
         json: true };
 
         request(options, function (error, response, body) {
             if (error) throw new Error(error);
+            console.log("The body is ");
             console.log(body);
             responseArray = body;
             for(var i in responseArray){
@@ -528,7 +558,7 @@ var ServiceInterface = {
     
             for(var i in res.locals.IFCEntitiesArray){
                 batchLabelsArray.push({ 
-                    method: 'POST', to: `/node/${internalIdArray[i]}/labels`, id: parseInt(i), body:res.locals.IFCEntitiesArray[i]._t});
+                    method: 'POST', to: `/node/${internalIdArray[i]}/labels`, id: parseInt(i), body: IFCparameterMapping[res.locals.IFCEntitiesArray[i]._t]});
             };
             //Step2: Assign label to nodes by batch.
             var options2 = { method: 'POST',
@@ -537,16 +567,16 @@ var ServiceInterface = {
             { 'postman-token': '9a92b3ce-492f-6c72-a262-ab09fdca6163',
                 'cache-control': 'no-cache',
                 authorization: 'Basic bmVvNGo6MjUwZGFvd29oYW8=',
-                'content-type': 'application/json',
+                'content-type': 'application/json;charset=UTF-8',
                 accept: 'application/json;charset=UTF-8' },
             body: batchLabelsArray,
             json: true };
 
                 request(options2,function(error,response,body){
                     if(error) throw new Error(error);
-                    console.log(body);
-                    console.log(internalIdArray);
-                    console.log(oidArray);
+                    //console.log(body);
+                    //console.log(internalIdArray);
+                    //console.log(oidArray);
 
                     //Step3: Create relationships by batch
                     for(var i in  res.locals.IFCRelationshipsArray){
@@ -568,7 +598,7 @@ var ServiceInterface = {
                                         var internalIdRelatedObj = internalIdArray[indexOidRelatedObj];    
                                         var indexOidRelatingdObj =oidArray.indexOf(res.locals.IFCRelationshipsArray[i][RelatingName].toString());
                                         var internalIdRelatingObj = internalIdArray[indexOidRelatingdObj];                    
-                                        console.log(res.locals.IFCRelationshipsArray[i][RelatingName]);
+                                        //console.log(res.locals.IFCRelationshipsArray[i][RelatingName]);
                                                     
                                         //Issue: relationship will duplicated
                                         batchRelArray.push({
@@ -579,7 +609,7 @@ var ServiceInterface = {
                                                 to : `/node/${internalIdRelatingObj}`,
                                                 data : {//relationship properties.e.g: since : "2010"
                                                 },
-                                                type : `${res.locals.IFCRelationshipsArray[i]._t}`
+                                                type : `${IFCparameterMapping[res.locals.IFCRelationshipsArray[i]._t].forward}`
                                                 }
                                             });
 
@@ -591,7 +621,7 @@ var ServiceInterface = {
                                                 to : `/node/${internalIdRelatedObj}`,
                                                 data : {//relationship properties.e.g: since : "2010"
                                                 },
-                                                type : `${res.locals.IFCRelationshipsArray[i]._t}`
+                                                type : `${IFCparameterMapping[res.locals.IFCRelationshipsArray[i]._t].back}`
                                                 }
                                             });
                                     };
@@ -605,14 +635,14 @@ var ServiceInterface = {
                     { 'postman-token': '9a92b3ce-492f-6c72-a262-ab09fdca6163',
                         'cache-control': 'no-cache',
                         authorization: 'Basic bmVvNGo6MjUwZGFvd29oYW8=',
-                        'content-type': 'application/json',
+                        'content-type': 'application/json;charset=UTF-8',
                         accept: 'application/json;charset=UTF-8' },
                     body: batchRelArray,
                     json: true };
 
                         request(options3,function(error,response,body){
                             if(error) throw new Error(error);
-                            console.log(body);
+                            //console.log(body);
                                 //Delete duplicated relationships
                                 var options4 = { method: 'POST',
                                 url: 'http://localhost:7474/db/data/batch',
@@ -620,7 +650,7 @@ var ServiceInterface = {
                                 { 'postman-token': '9a92b3ce-492f-6c72-a262-ab09fdca6163',
                                     'cache-control': 'no-cache',
                                     authorization: 'Basic bmVvNGo6MjUwZGFvd29oYW8=',
-                                    'content-type': 'application/json',
+                                    'content-type': 'application/json;charset=UTF-8',
                                     accept: 'application/json;charset=UTF-8' },
                                 body:[{ method: 'POST',
                                         to: '/cypher',
@@ -630,6 +660,8 @@ var ServiceInterface = {
                                 request(options4,function(error,response,body){
                                     if(error) throw new Error(error);
                                     console.log(body);  
+                                    console.log("Neo4j Merge");
+                                    res.end();
                                 });                                                                                                    
                         });
                 });          

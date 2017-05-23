@@ -301,23 +301,16 @@ var ServiceInterface = {
     download:function(req, res, next) {
         //revisionSummary List :[IFCEntities,IFCRelationships,IFCPromitive,Rest]
         var IFCGroupName=[];  
-        //for(var i in res.locals.revisionSummary.list){ 
             //IFCEntities
             for(var j in res.locals.revisionSummary.list[0].types){ 
                 IFCGroupName.push(res.locals.revisionSummary.list[0].types[j].name);
             }; 
             //IFCRel
             for(var k in res.locals.revisionSummary.list[1].types){
-                if(res.locals.revisionSummary.list[1].types[k].name!=="IfcRelDefinesByProperties"){ 
+                if(res.locals.revisionSummary.list[1].types[k].name!=="IfcRelDefinesByProperties"&&res.locals.revisionSummary.list[1].types[k].name!=="IfcRelDefinesByType"&&res.locals.revisionSummary.list[1].types[k].name!=="IfcRelAssociatesMaterial"){ //omit more rels here.
                     IFCGroupName.push(res.locals.revisionSummary.list[1].types[k].name);
                 };
             }; 
-            //Rest  
-            // for(var r in res.locals.revisionSummary.list[3].types){ 
-            //     IFCGroupName.push(res.locals.revisionSummary.list[3].types[r].name);
-            // };                       
-
-        //};
 
         //Full IFC types query sometimes get stuck but sometimes just smoothly execute. Not sure why?
         var queryString=JSON.stringify({"types":IFCGroupName});
@@ -373,12 +366,9 @@ var ServiceInterface = {
     downloadServlet:function(req, res, next) {
         var data = {token:client.token,topicId:res.locals.topicId,serializerOid:res.locals.serializerOid};
         var url = `http://localhost:8082/download?token=${data.token}&serializerOid=${data.serializerOid}]&topicId=${data.topicId}`;
-        
-        //Array of json object.
+        //Seperate IFCEntities and IFCRels.
         var IFCEntitiesArray=[];
         var IFCRelationshipsArray=[];
-        //var path=`/download?token=${data.token}&serializerOid=${data.serializerOid}]&topicId=${data.topicId}`
-        //Download option2, HTTP download, response data is json type instead of base64 encoded which is by getDownloadData() method. 
         needle.get(url, function(error, response) {
             if (!error && response.statusCode == 200){
                 //console.log(response.body);//it is {objects:[...]}, it is json format not base64 so different from the response data using api call.
@@ -398,12 +388,11 @@ var ServiceInterface = {
                 //console.log(IFCEntitiesArray);
                 console.log('------------IFCEntities above------------------IFCRelations below-----------------------')
                 //console.log(IFCRelationshipsArray);
-
+                //Write all downloaded IFCData into txt for backup purpose.
                 fs.writeFile(path.join(__dirname,'../public','IFCData.txt'),JSON.stringify(IFCData),function(err){
                     console.log(err);
                 });  
                 
-                //Start
                 //IFCEntitiesOidArray include all IFCEntities oid.
                 var IFCEntitiesOidArray=[];
                 for(var i in IFCEntitiesArray){
@@ -473,7 +462,6 @@ var ServiceInterface = {
             topicId: res.locals.topicId
         }, function(data){
             console.log(data);
-            console.log( res.locals.topicId);
             next();
         }, function(err) {
             console.log(err)
@@ -486,40 +474,15 @@ var ServiceInterface = {
  }
 
 
-//api for Neo4j
 
-// var RESTAPI={
-//     batch:function(body,callback){
-//         var options = { method: 'POST',
-//         url: 'http://localhost:7474/db/data/batch',
-//         headers: 
-//         { 'postman-token': '9a92b3ce-492f-6c72-a262-ab09fdca6163',
-//             'cache-control': 'no-cache',
-//             authorization: 'Basic bmVvNGo6MjUwZGFvd29oYW8=',
-//             'content-type': 'application/json',
-//             accept: 'application/json;charset=UTF-8' },
-//         body: body,
-//         json: true };
-
-//         request(options, function (error, response, body) {
-//             if (error) throw new Error(error);
-//             console.log(body);
-//             callback();
-//         });
-                    
-//     },
-
-// };
-
-// RESTAPI.batch()
  var Neo4j={
      batchMerge:function(req, res, next) {
         var batchNodesArray=[];
         var batchLabelsArray=[]
         var batchRelArray=[];
         var responseArray = [];
-        var internalIdArray = [];
-        var oidArray=[];
+        var internalIdArray = [];//internalIdArray is the array of Neo4j internalId of all IFCEntities   
+        var oidArray=[];//oidArray is the array for oids of all IFCEntities
 
         //Step1: Merge nodes.
         //"MERGE(n { name:'"+res.locals.IFCEntitiesArray[i].Name+"',oid:'"+res.locals.IFCEntitiesArray[i]._i.toString()+"',guid:'"+res.locals.IFCEntitiesArray[i].GlobalId+"' })   RETURN n",
@@ -528,6 +491,7 @@ var ServiceInterface = {
             method: 'POST',
             to: '/cypher',
             body: 
+                //It is required to use quote "" or '' to cover the value.
                 { query: `MERGE(n { name:"${res.locals.IFCEntitiesArray[i].Name}",oid:"${res.locals.IFCEntitiesArray[i]._i.toString()}",guid:"${res.locals.IFCEntitiesArray[i].GlobalId}" })   RETURN n`,
                 params: res.locals.IFCEntitiesArray[i]},
             id: parseInt(i) });
@@ -552,10 +516,11 @@ var ServiceInterface = {
             console.log("The body is ");
             console.log(body);
             responseArray = body;
+            //Generate internalIdArray
             for(var i in responseArray){
                 internalIdArray.push(responseArray[i].body.data[0][0].metadata.id);//correct
             };
-    
+            //Create assign label content
             for(var i in res.locals.IFCEntitiesArray){
                 batchLabelsArray.push({ 
                     method: 'POST', to: `/node/${internalIdArray[i]}/labels`, id: parseInt(i), body: IFCparameterMapping[res.locals.IFCEntitiesArray[i]._t]});
@@ -600,7 +565,6 @@ var ServiceInterface = {
                                         var internalIdRelatingObj = internalIdArray[indexOidRelatingdObj];                    
                                         //console.log(res.locals.IFCRelationshipsArray[i][RelatingName]);
                                                     
-                                        //Issue: relationship will duplicated
                                         batchRelArray.push({
                                             method : "POST",
                                             to : `/node/${internalIdRelatedObj}/relationships`,

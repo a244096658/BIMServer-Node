@@ -319,7 +319,7 @@ var ServiceInterface = {
 
         //console.log(querystring);
 
-        var query1 = '{"types": ["IfcDoor","IfcSpace", "IfcWindow","IfcBeam","IfcBuilding","IfcRelContainedInSpatialStructure"]}' // {"types": ["IfcDoor", "IfcWindow"]}  //Current use: {"queries":[{"type":"IfcSpace"}]}
+        //var query1 = '{"types": ["IfcDoor","IfcSpace", "IfcWindow","IfcBeam","IfcBuilding","IfcRelContainedInSpatialStructure"]}' // {"types": ["IfcDoor", "IfcWindow"]}  //Current use: {"queries":[{"type":"IfcSpace"}]}
         //var queryBase64 = new Buffer(query1).toString('base64');
 
         client.call('ServiceInterface', 'download', {
@@ -514,7 +514,7 @@ var ServiceInterface = {
         request(options, function (error, response, body) {
             if (error) throw new Error(error);
             console.log("The body is ");
-            console.log(body);
+            //console.log(body);
             responseArray = body;
             //Generate internalIdArray
             for(var i in responseArray){
@@ -542,6 +542,8 @@ var ServiceInterface = {
                     //console.log(body);
                     //console.log(internalIdArray);
                     //console.log(oidArray);
+                    console.log("relationships are : ---------------");
+                    console.log(res.locals.IFCRelationshipsArray);
 
                     //Step3: Create relationships by batch
                     for(var i in  res.locals.IFCRelationshipsArray){
@@ -554,7 +556,7 @@ var ServiceInterface = {
                             };
                         };
 
-                            if(typeof RelatedName != 'undefined' &&typeof RelatingName != 'undefined'){
+                            if(typeof RelatedName != 'undefined' &&typeof RelatingName != 'undefined'&&Array.isArray(res.locals.IFCRelationshipsArray[i][RelatedName])){
                                 for(var j in res.locals.IFCRelationshipsArray[i][RelatedName]){
                                     //Check if the Related/Relating object are belong to IFCEntities. 
                                     if(res.locals.IFCEntitiesOidArray.indexOf(res.locals.IFCRelationshipsArray[i][RelatedName][j])!==-1&&res.locals.IFCEntitiesOidArray.indexOf(res.locals.IFCRelationshipsArray[i][RelatingName])!==-1){
@@ -573,7 +575,7 @@ var ServiceInterface = {
                                                 to : `/node/${internalIdRelatingObj}`,
                                                 data : {//relationship properties.e.g: since : "2010"
                                                 },
-                                                type : `${IFCparameterMapping[res.locals.IFCRelationshipsArray[i]._t].forward}`
+                                                type : `${IFCparameterMapping[res.locals.IFCRelationshipsArray[i]._t].forward}`//IFCparameterMapping[res.locals.IFCRelationshipsArray[i]._t].forward
                                                 }
                                             });
 
@@ -585,13 +587,52 @@ var ServiceInterface = {
                                                 to : `/node/${internalIdRelatedObj}`,
                                                 data : {//relationship properties.e.g: since : "2010"
                                                 },
-                                                type : `${IFCparameterMapping[res.locals.IFCRelationshipsArray[i]._t].back}`
+                                                type : `${IFCparameterMapping[res.locals.IFCRelationshipsArray[i]._t].back}`//IFCparameterMapping[res.locals.IFCRelationshipsArray[i]._t].back
                                                 }
                                             });
                                     };
                                 };
+                            } else if(typeof RelatedName != 'undefined' &&typeof RelatingName != 'undefined'&&!Array.isArray(res.locals.IFCRelationshipsArray[i][RelatedName])){
+                                //for(var j in res.locals.IFCRelationshipsArray[i][RelatedName]){
+                                    //Check if the Related/Relating object are belong to IFCEntities. 
+                                    if(res.locals.IFCEntitiesOidArray.indexOf(res.locals.IFCRelationshipsArray[i][RelatedName])!==-1&&res.locals.IFCEntitiesOidArray.indexOf(res.locals.IFCRelationshipsArray[i][RelatingName])!==-1){
+
+                                        var indexOidRelatedObj =oidArray.indexOf(res.locals.IFCRelationshipsArray[i][RelatedName].toString());
+                                        var internalIdRelatedObj = internalIdArray[indexOidRelatedObj];    
+                                        var indexOidRelatingdObj =oidArray.indexOf(res.locals.IFCRelationshipsArray[i][RelatingName].toString());
+                                        var internalIdRelatingObj = internalIdArray[indexOidRelatingdObj];                    
+                                        //console.log(res.locals.IFCRelationshipsArray[i][RelatingName]);
+                                                    
+                                        batchRelArray.push({
+                                            method : "POST",
+                                            to : `/node/${internalIdRelatedObj}/relationships`,
+                                            id : parseInt(i),
+                                            body : {
+                                                to : `/node/${internalIdRelatingObj}`,
+                                                data : {//relationship properties.e.g: since : "2010"
+                                                },
+                                                type : `${IFCparameterMapping[res.locals.IFCRelationshipsArray[i]._t].forward}`//IFCparameterMapping[res.locals.IFCRelationshipsArray[i]._t].forward
+                                                }
+                                            });
+
+                                        batchRelArray.push({
+                                            method : "POST",
+                                            to : `/node/${internalIdRelatingObj}/relationships`,
+                                            id : parseInt(i),
+                                            body : {
+                                                to : `/node/${internalIdRelatedObj}`,
+                                                data : {//relationship properties.e.g: since : "2010"
+                                                },
+                                                type : `${IFCparameterMapping[res.locals.IFCRelationshipsArray[i]._t].back}`//IFCparameterMapping[res.locals.IFCRelationshipsArray[i]._t].back
+                                                }
+                                            });
+                                    };
+                                //};                                
+
                             };
                     };   
+
+                    //console.log(batchRelArray);
 
                     var options3 = { method: 'POST',
                     url: 'http://localhost:7474/db/data/batch',
@@ -606,7 +647,9 @@ var ServiceInterface = {
 
                         request(options3,function(error,response,body){
                             if(error) throw new Error(error);
-                            //console.log(body);
+                            console.log("Neo4j data create successfully");
+                            res.end();
+                            console.log(body);
                                 //Delete duplicated relationships
                                 var options4 = { method: 'POST',
                                 url: 'http://localhost:7474/db/data/batch',
@@ -623,8 +666,8 @@ var ServiceInterface = {
                                         json: true };  
                                 request(options4,function(error,response,body){
                                     if(error) throw new Error(error);
-                                    console.log(body);  
-                                    console.log("Neo4j Merge");
+                                    //console.log(body);  
+                                    console.log("Neo4j data create successfully");
                                     res.end();
                                 });                                                                                                    
                         });

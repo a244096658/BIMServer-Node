@@ -436,7 +436,7 @@ var IFCparameterMapping={
     "IfcReinforcingBar":"ReinforcingBar",
     "IfcReinforcingElement":"ReinforcingElement",
     "IfcReinforcingMesh":"ReinforcingMesh",
-    "IfcRelAggregates":{"back":"INCLUDES","forward":"LOCATED_IN"},
+    "IfcRelAggregates":{"back":"INCLUDES1","forward":"LOCATED_IN1"},
     "IfcRelAssigns":"",
     "IfcRelAssignsTasks":"",
     "IfcRelAssignsToActor":"",
@@ -483,7 +483,7 @@ var IFCparameterMapping={
     "IfcRelSchedulesCostItems":"",
     "IfcRelSequence":"",
     "IfcRelServicesBuildings":"",
-    "IfcRelSpaceBoundary":"",
+    "IfcRelSpaceBoundary":{"back":"BOUNDING","forward":"NEAR_SPACE"},
     "IfcRelVoidsElement":{"back":"OPENED_BY","forward":"OPENS"},
     "IfcRelationship":"",
     "IfcRelaxation":"",
@@ -652,7 +652,7 @@ var IFCparameterMapping={
     "IfcWorkPlan":"WorkPlan",
     "IfcWorkSchedule":"WorkSchedule",
     "IfcZShapeProfileDef":"ZShapeProfileDef",
-    "IfcZone":"Zone",    
+    "IfcZone":"Zone" 
        
     
 

@@ -483,7 +483,7 @@ var IFCparameterMapping={
     "IfcRelSchedulesCostItems":"",
     "IfcRelSequence":"",
     "IfcRelServicesBuildings":"",
-    "IfcRelSpaceBoundary":{"back":"BOUNDING","forward":"NEAR_SPACE"},
+    "IfcRelSpaceBoundary":{"back":"BOUNDING","forward":"NEAREST_SPACE"},
     "IfcRelVoidsElement":{"back":"OPENED_BY","forward":"OPENS"},
     "IfcRelationship":"",
     "IfcRelaxation":"",

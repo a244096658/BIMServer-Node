@@ -486,14 +486,15 @@ var ServiceInterface = {
 
         //Step1: Merge nodes.
         //"MERGE(n { name:'"+res.locals.IFCEntitiesArray[i].Name+"',oid:'"+res.locals.IFCEntitiesArray[i]._i.toString()+"',guid:'"+res.locals.IFCEntitiesArray[i].GlobalId+"' })   RETURN n",
+        //`MERGE(n { name:"${res.locals.IFCEntitiesArray[i].Name}",oid:"${res.locals.IFCEntitiesArray[i]._i.toString()}",guid:"${res.locals.IFCEntitiesArray[i].GlobalId}" })   RETURN n`
         for(var i in res.locals.IFCEntitiesArray){
             batchNodesArray.push({ 
             method: 'POST',
             to: '/cypher',
             body: 
                 //It is required to use quote "" or '' to cover the value.
-                { query: `MERGE(n { name:"${res.locals.IFCEntitiesArray[i].Name}",oid:"${res.locals.IFCEntitiesArray[i]._i.toString()}",guid:"${res.locals.IFCEntitiesArray[i].GlobalId}" })   RETURN n`,
-                params: res.locals.IFCEntitiesArray[i]},
+                { query: `MERGE(n { name:"${res.locals.IFCEntitiesArray[i].Name}",oid:"${res.locals.IFCEntitiesArray[i]._i.toString()}",guid:"${res.locals.IFCEntitiesArray[i].GlobalId}" })   RETURN n`
+                },
             id: parseInt(i) });
 
             oidArray.push(res.locals.IFCEntitiesArray[i]._i.toString());//correct. string type.
@@ -505,6 +506,7 @@ var ServiceInterface = {
         headers: 
         { 'postman-token': '9a92b3ce-492f-6c72-a262-ab09fdca6163',
             'cache-control': 'no-cache',
+            'x-stream': 'true',
             authorization: 'Basic bmVvNGo6MjUwZGFvd29oYW8=',
             'content-type': 'application/json;charset=UTF-8',
             accept: 'application/json;charset=UTF-8' },
@@ -531,6 +533,7 @@ var ServiceInterface = {
             headers: 
             { 'postman-token': '9a92b3ce-492f-6c72-a262-ab09fdca6163',
                 'cache-control': 'no-cache',
+                'x-stream': 'true',
                 authorization: 'Basic bmVvNGo6MjUwZGFvd29oYW8=',
                 'content-type': 'application/json;charset=UTF-8',
                 accept: 'application/json;charset=UTF-8' },
@@ -639,6 +642,7 @@ var ServiceInterface = {
                     headers: 
                     { 'postman-token': '9a92b3ce-492f-6c72-a262-ab09fdca6163',
                         'cache-control': 'no-cache',
+                        'x-stream': 'true',
                         authorization: 'Basic bmVvNGo6MjUwZGFvd29oYW8=',
                         'content-type': 'application/json;charset=UTF-8',
                         accept: 'application/json;charset=UTF-8' },

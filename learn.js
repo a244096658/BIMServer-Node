@@ -15,6 +15,32 @@
 
 // var request = require("request");
 
+var request = require("request");
+
+var options = { method: 'POST',
+  url: 'http://localhost:7474/db/data/cypher',
+  headers: 
+   { 'postman-token': '98b6e51a-afbe-2dac-a3c4-5767125eede1',
+     'cache-control': 'no-cache',
+     authorization: 'Basic bmVvNGo6MjUwZGFvd29oYW8=',
+     'content-type': 'application/json',
+     accept: 'application/json; charset=UTF-8' },
+  body: 
+   { query: 'UNWIND {props} AS properties MERGE (n) SET n = properties RETURN n',
+     params: 
+      { props: 
+         [ { name: 'Andres', position: 'Developer' },
+           { name: 'Michael', position: 'Developer' } ] } },
+  json: true };
+
+request(options, function (error, response, body) {
+  if (error) throw new Error(error);
+
+  //console.log(body);
+  for(var i in body.data){
+   console.log(body.data[i][0].metadata.id);//correct
+};
+});
 
 
 
@@ -43,47 +69,47 @@
 
 // //
 
-var request = require("request");
+// var request = require("request");
 
-var options = { method: 'POST',
-  url: 'http://localhost:7474/db/data/batch',
-  headers: 
-   { 'postman-token': '00e6e995-86ac-6463-7883-931a3121b7c8',
-     'cache-control': 'no-cache',
-     authorization: 'Basic bmVvNGo6MjUwZGFvd29oYW8=',
-     'content-type': 'application/json',
-     accept: 'application/json; charset=UTF-8' },
-  body: 
-   [ { method: 'POST', to: '/node', id: 0, body: { name: 'bob' } },
-     { method: 'POST', to: '/node', id: 1, body: { age: 12 } },
+// var options = { method: 'POST',
+//   url: 'http://localhost:7474/db/data/batch',
+//   headers: 
+//    { 'postman-token': '00e6e995-86ac-6463-7883-931a3121b7c8',
+//      'cache-control': 'no-cache',
+//      authorization: 'Basic bmVvNGo6MjUwZGFvd29oYW8=',
+//      'content-type': 'application/json',
+//      accept: 'application/json; charset=UTF-8' },
+//   body: 
+//    [ { method: 'POST', to: '/node', id: 0, body: { name: 'bob' } },
+//      { method: 'POST', to: '/node', id: 1, body: { age: 12 } },
     
-     { method: 'POST',
-       to: '{0}/relationships',
-       id: 3,
-       body: { to: '{1}', data: { since: '2010' }, type: 'KNOWS' } },
-     { method: 'POST',
-       to: '/index/relationship/my_rels',
-       id: 4,
-       body: { key: 'since', value: '2010', uri: '{3}' } },
-     {
-        method : "POST",
-        to : "/cypher",
-        body : {
-        query : "MERGE(n:label  {name:{userId1}, position:{userId2}, oid:{userId2} })   RETURN n",
-        params : {"userId1":"21000001", "userId2":"21000002","label":"Friend"}
-        },
-        id : 8
-    },
-    { method: 'POST', to: '/cypher/8/labels', id: 7, body: 'STUDENT' }  ],
-  json: true };
+//      { method: 'POST',
+//        to: '{0}/relationships',
+//        id: 3,
+//        body: { to: '{1}', data: { since: '2010' }, type: 'KNOWS' } },
+//      { method: 'POST',
+//        to: '/index/relationship/my_rels',
+//        id: 4,
+//        body: { key: 'since', value: '2010', uri: '{3}' } },
+//      {
+//         method : "POST",
+//         to : "/cypher",
+//         body : {
+//         query : "MERGE(n:label  {name:{userId1}, position:{userId2}, oid:{userId2} })   RETURN n",
+//         params : {"userId1":"21000001", "userId2":"21000002","label":"Friend"}
+//         },
+//         id : 8
+//     },
+//     { method: 'POST', to: '/cypher/8/labels', id: 7, body: 'STUDENT' }  ],
+//   json: true };
 
-request(options, function (error, response, body) {
-  if (error) throw new Error(error);
+// request(options, function (error, response, body) {
+//   if (error) throw new Error(error);
 
-  console.log(body);
-});
+//   console.log(body);
+// });
 
-console.log(options)
+// console.log(options)
 
 
 // var request = require("request");

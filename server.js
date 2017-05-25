@@ -83,7 +83,7 @@ app.post('/getAllUsers', api.ServiceInterface.getAllUsers );
 app.post('/addUserToProject', api.ServiceInterface.addUserToProject );
 app.post('/getUsersProjects', api.ServiceInterface.getUsersProjects);
 app.post('/checkin', api.ServiceInterface.getSuggestedDeserializerForExtension,api.ServiceInterface.checkin);
-app.post('/getRevisionSummary', api.ServiceInterface.getAllRevisionsOfProject,api.ServiceInterface.getProjectByPoid,api.ServiceInterface.getRevisionSummary,api.PluginInterface.getSerializerByPluginClassName,api.ServiceInterface.download,api.ServiceInterface.downloadServlet,api.NotificationRegistryInterface.getProgress,api.Neo4j.batchMerge,api.ServiceInterface.cleanupLongAction);
+app.post('/getRevisionSummary', api.ServiceInterface.getAllRevisionsOfProject,api.ServiceInterface.getProjectByPoid,api.ServiceInterface.getRevisionSummary,api.PluginInterface.getSerializerByPluginClassName,api.ServiceInterface.download,api.ServiceInterface.downloadServlet,api.NotificationRegistryInterface.getProgress,api.Neo4j.batchMerge2,api.ServiceInterface.cleanupLongAction);
 //Server start
 
 

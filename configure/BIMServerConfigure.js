@@ -436,7 +436,7 @@ var IFCparameterMapping={
     "IfcReinforcingBar":"ReinforcingBar",
     "IfcReinforcingElement":"ReinforcingElement",
     "IfcReinforcingMesh":"ReinforcingMesh",
-    "IfcRelAggregates":{"back":"INCLUDES1","forward":"LOCATED_IN1"},
+    "IfcRelAggregates":{"back":"INCLUDES","forward":"LOCATED_IN"},
     "IfcRelAssigns":"",
     "IfcRelAssignsTasks":"",
     "IfcRelAssignsToActor":"",

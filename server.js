@@ -16,6 +16,7 @@ var BimServerClient = require('./bimServerJS/bimserverclient');
 var base64 = require('file-base64');
 
 app.set('port', process.env.PORT || 3000);
+//app.use(timeout timeout(600000));
 // use flash and session.
 app.use(express.cookieParser());
 app.use(express.session({ cookie: { maxAge: 60000 }, secret: 'anne#'}));
@@ -83,10 +84,15 @@ app.post('/getAllUsers', api.ServiceInterface.getAllUsers );
 app.post('/addUserToProject', api.ServiceInterface.addUserToProject );
 app.post('/getUsersProjects', api.ServiceInterface.getUsersProjects);
 app.post('/checkin', api.ServiceInterface.getSuggestedDeserializerForExtension,api.ServiceInterface.checkin);
-app.post('/getRevisionSummary', api.ServiceInterface.getAllRevisionsOfProject,api.ServiceInterface.getProjectByPoid,api.ServiceInterface.getRevisionSummary,api.PluginInterface.getSerializerByPluginClassName,api.ServiceInterface.download,api.ServiceInterface.downloadServlet,api.NotificationRegistryInterface.getProgress,api.Neo4j.batchMerge2,api.ServiceInterface.cleanupLongAction);
+app.post('/getRevisionSummary', api.ServiceInterface.getAllRevisionsOfProject,api.ServiceInterface.getProjectByPoid,api.ServiceInterface.getRevisionSummary,api.PluginInterface.getSerializerByPluginClassName,api.ServiceInterface.download,api.ServiceInterface.downloadServlet,api.NotificationRegistryInterface.getProgress,api.Neo4j.batchMerge3,api.Neo4j.batchLabel,api.Neo4j.batchRel,api.ServiceInterface.cleanupLongAction);//
 //Server start
 
-
-http.createServer(app).listen(app.get('port'), function(req,res){
+var server = http.createServer(app);
+server.setTimeout(600*1000);
+server.listen(app.get('port'), function(req,res){
   console.log('Express server listening on port ' + app.get('port'));
 });
+
+// http.createServer(app).listen(app.get('port'), function(req,res){
+//   console.log('Express server listening on port ' + app.get('port'));
+// });

@@ -39,15 +39,14 @@ app.set("view engine", 'ejs');
 app.set('views', __dirname + '/views');
 //Use fileupload from client side.
 
-
 // development only
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
 // GET Requests
-app.get('/', function(req,res,next){ 
-  res.render('pages/checkin',{message:req.flash('info'),messageUserType:req.session.userType}); 
+app.get('/', function(req,res,next){
+  res.render('pages/checkin',{message:req.flash('info'),messageUserType:req.session.userType});
 //  req.session.userType=null;
 });
 app.get('/login', function(req,res,next){
@@ -60,14 +59,12 @@ app.get('/getAllProjects', function(req,res,next){res.render('pages/checkin',{mo
 app.get('/getSubProjects', api.ServiceInterface.showProjectsAndSubProjects);
 app.get('/getAllUsers', function(req,res,next){res.render('pages/checkin',{moduleName:["../partials/getAllUsers"],messageUserType:req.session.userType})});
 app.get('/addUserToProject', api.ServiceInterface.showUserAndProject);
-
 app.get('/getUsersProjects', function(req,res,next){
   res.render('pages/checkin',{moduleName:["../partials/getUsersProjects"],messageUserType:req.session.userType});
 });
 app.get('/checkin', function(req,res,next){
   res.render('pages/checkin',{moduleName:["../partials/checkin"],messageUserType:req.session.userType});
 });
-
 app.get('/getRevisionSummary', function(req,res,next){
   res.render('pages/checkin',{moduleName:["../partials/getRevisionSummary"],messageUserType:req.session.userType});
 });

@@ -1,0 +1,369 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   'sleep' ]
+2 info using npm@2.15.9
+3 info using node@v4.6.0
+4 verbose install initial load of D:\GitLibrary\BIMServer_Node\BIMServer-Node\package.json
+5 warn package.json bim_node@1.0.0 No repository field.
+6 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\ajv\package.json
+7 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\asn1\package.json
+8 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\assert-plus\package.json
+9 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\async\package.json
+10 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\asynckit\package.json
+11 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\aws-sign2\package.json
+12 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\aws4\package.json
+13 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\base64url\package.json
+14 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\bcrypt-pbkdf\package.json
+15 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\body-parser\package.json
+16 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\boom\package.json
+17 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\buffer-crc32\package.json
+18 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\buffer-equal-constant-time\package.json
+19 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\buffer-shims\package.json
+20 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\bytes\package.json
+21 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\caseless\package.json
+22 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\co\package.json
+23 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\combined-stream\package.json
+24 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\commander\package.json
+25 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\concat-stream\package.json
+26 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\connect\package.json
+27 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\connect-flash\package.json
+28 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\content-type\package.json
+29 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\cookie\package.json
+30 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\cookie-parser\package.json
+31 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\cookie-signature\package.json
+32 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\core-util-is\package.json
+33 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\cryptiles\package.json
+34 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\dashdash\package.json
+35 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\debug\package.json
+36 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\delayed-stream\package.json
+37 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\depd\package.json
+38 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\ecc-jsbn\package.json
+39 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\ecdsa-sig-formatter\package.json
+40 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\ee-first\package.json
+41 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\ejs\package.json
+42 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\express\package.json
+43 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\express-fileupload\package.json
+44 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\express-jwt\package.json
+45 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\express-session\package.json
+46 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\express-unless\package.json
+47 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\extend\package.json
+48 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\extsprintf\package.json
+49 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\file-base64\package.json
+50 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\forever-agent\package.json
+51 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\form-data\package.json
+52 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\fresh\package.json
+53 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\from2\package.json
+54 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\getpass\package.json
+55 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\har-schema\package.json
+56 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\har-validator\package.json
+57 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\hawk\package.json
+58 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\hoek\package.json
+59 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\html\package.json
+60 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\http\package.json
+61 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\http-errors\package.json
+62 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\http-signature\package.json
+63 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\iconv-lite\package.json
+64 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\inherits\package.json
+65 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\into-stream\package.json
+66 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\is-typedarray\package.json
+67 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\isarray\package.json
+68 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\isemail\package.json
+69 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\isstream\package.json
+70 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\jodid25519\package.json
+71 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\joi\package.json
+72 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\jsbn\package.json
+73 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\json-schema\package.json
+74 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\json-stable-stringify\package.json
+75 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\json-stringify-safe\package.json
+76 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\jsonify\package.json
+77 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\jsonwebtoken\package.json
+78 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\jsprim\package.json
+79 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\jwa\package.json
+80 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\jws\package.json
+81 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\keypress\package.json
+82 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\lodash\package.json
+83 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\lodash.once\package.json
+84 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\lodash.set\package.json
+85 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\media-typer\package.json
+86 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\methods\package.json
+87 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\mime\package.json
+88 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\mime-db\package.json
+89 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\mime-types\package.json
+90 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\mkdirp\package.json
+91 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\moment\package.json
+92 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\mqtt\package.json
+93 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\ms\package.json
+94 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\multiparty\package.json
+95 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\nan\package.json
+96 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\needle\package.json
+97 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\negotiator\package.json
+98 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\neo4j-driver\package.json
+99 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\oauth-sign\package.json
+100 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\on-finished\package.json
+101 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\path\package.json
+102 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\pause\package.json
+103 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\performance-now\package.json
+104 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\process\package.json
+105 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\process-nextick-args\package.json
+106 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\progress\package.json
+107 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\punycode\package.json
+108 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\qs\package.json
+109 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\querystring\package.json
+110 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\range-parser\package.json
+111 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\raw-body\package.json
+112 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\readable-stream\package.json
+113 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\request\package.json
+114 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\request-progress\package.json
+115 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\requirejs\package.json
+116 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\safe-buffer\package.json
+117 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\send\package.json
+118 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\setprototypeof\package.json
+119 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\sntp\package.json
+120 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\sshpk\package.json
+121 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\statuses\package.json
+122 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\stream-counter\package.json
+123 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\string_decoder\package.json
+124 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\stringstream\package.json
+125 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\topo\package.json
+126 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\tough-cookie\package.json
+127 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\tunnel-agent\package.json
+128 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\tweetnacl\package.json
+129 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\type-is\package.json
+130 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\typedarray\package.json
+131 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\typedarray-to-buffer\package.json
+132 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\uid2\package.json
+133 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\unpipe\package.json
+134 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\url\package.json
+135 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\util\package.json
+136 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\util-deprecate\package.json
+137 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\uuid\package.json
+138 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\verror\package.json
+139 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\websocket\package.json
+140 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\xhr2\package.json
+141 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\xtend\package.json
+142 verbose installManyTop reading scoped package data from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\yaeti\package.json
+143 info package.json buffer-crc32@0.2.1 No license field.
+144 info package.json bcrypt-pbkdf@1.0.1 No repository field.
+145 info package.json commander@1.3.2 No license field.
+146 info package.json connect-flash@0.1.1 No license field.
+147 info package.json connect@2.11.0 No license field.
+148 info package.json cookie@0.1.0 No license field.
+149 info package.json cookie-signature@1.0.1 No repository field.
+150 info package.json cookie-signature@1.0.1 No license field.
+151 info package.json express@3.4.4 No license field.
+152 info package.json express-jwt@5.3.0 No license field.
+153 info package.json express-unless@0.3.0 No license field.
+154 info package.json extsprintf@1.0.2 No license field.
+155 info package.json fresh@0.2.0 No license field.
+156 info package.json html@1.0.0 license should be a valid SPDX license expression
+157 info package.json http@0.0.0 http is also the name of a node core module.
+158 info package.json http@0.0.0 No description
+159 info package.json http@0.0.0 No repository field.
+160 info package.json json-schema@0.2.3 No license field.
+161 info package.json jsonify@0.0.0 license should be a valid SPDX license expression
+162 info package.json mime@1.2.11 No license field.
+163 info package.json pause@0.0.1 No repository field.
+164 info package.json pause@0.0.1 No license field.
+165 info package.json path@0.12.7 path is also the name of a node core module.
+166 info package.json process@0.11.10 process is also the name of a node core module.
+167 info package.json punycode@1.3.2 punycode is also the name of a node core module.
+168 info package.json querystring@0.2.0 querystring is also the name of a node core module.
+169 info package.json querystring@0.2.0 No license field.
+170 info package.json range-parser@0.0.4 No repository field.
+171 info package.json range-parser@0.0.4 No license field.
+172 info package.json send@0.1.4 No license field.
+173 info package.json sntp@1.0.9 No license field.
+174 info package.json stream-counter@0.2.0 license should be a valid SPDX license expression
+175 info package.json string_decoder@1.0.0 string_decoder is also the name of a node core module.
+176 info package.json util@0.10.3 util is also the name of a node core module.
+177 info package.json url@0.11.0 url is also the name of a node core module.
+178 info package.json verror@1.3.6 No license field.
+179 info package.json uid2@0.0.3 No repository field.
+180 info package.json uid2@0.0.3 No license field.
+181 verbose readDependencies loading dependencies from D:\GitLibrary\BIMServer_Node\BIMServer-Node\package.json
+182 silly cache add args [ 'sleep', null ]
+183 verbose cache add spec sleep
+184 silly cache add parsed spec Result {
+184 silly cache add   raw: 'sleep',
+184 silly cache add   scope: null,
+184 silly cache add   name: 'sleep',
+184 silly cache add   rawSpec: '',
+184 silly cache add   spec: 'latest',
+184 silly cache add   type: 'tag' }
+185 silly addNamed sleep@latest
+186 verbose addNamed "latest" is being treated as a dist-tag for sleep
+187 info addNameTag [ 'sleep', 'latest' ]
+188 silly mapToRegistry name sleep
+189 silly mapToRegistry using default registry
+190 silly mapToRegistry registry https://registry.npmjs.org/
+191 silly mapToRegistry data Result {
+191 silly mapToRegistry   raw: 'sleep',
+191 silly mapToRegistry   scope: null,
+191 silly mapToRegistry   name: 'sleep',
+191 silly mapToRegistry   rawSpec: '',
+191 silly mapToRegistry   spec: 'latest',
+191 silly mapToRegistry   type: 'tag' }
+192 silly mapToRegistry uri https://registry.npmjs.org/sleep
+193 verbose addNameTag registry:https://registry.npmjs.org/sleep not in flight; fetching
+194 verbose request uri https://registry.npmjs.org/sleep
+195 verbose request no auth needed
+196 info attempt registry request try #1 at 16:10:50
+197 verbose request id 47a166ca2fdf25e9
+198 verbose etag W/"58f4dafe-56ea"
+199 verbose lastModified Mon, 17 Apr 2017 15:10:54 GMT
+200 http request GET https://registry.npmjs.org/sleep
+201 http 304 https://registry.npmjs.org/sleep
+202 verbose headers { date: 'Wed, 07 Jun 2017 13:10:50 GMT',
+202 verbose headers   via: '1.1 varnish',
+202 verbose headers   'cache-control': 'max-age=300',
+202 verbose headers   etag: 'W/"58f4dafe-56ea"',
+202 verbose headers   age: '0',
+202 verbose headers   connection: 'keep-alive',
+202 verbose headers   'x-served-by': 'cache-bma7025-BMA',
+202 verbose headers   'x-cache': 'HIT',
+202 verbose headers   'x-cache-hits': '1',
+202 verbose headers   'x-timer': 'S1496841051.752016,VS0,VE24',
+202 verbose headers   vary: 'Accept-Encoding' }
+203 silly get cb [ 304,
+203 silly get   { date: 'Wed, 07 Jun 2017 13:10:50 GMT',
+203 silly get     via: '1.1 varnish',
+203 silly get     'cache-control': 'max-age=300',
+203 silly get     etag: 'W/"58f4dafe-56ea"',
+203 silly get     age: '0',
+203 silly get     connection: 'keep-alive',
+203 silly get     'x-served-by': 'cache-bma7025-BMA',
+203 silly get     'x-cache': 'HIT',
+203 silly get     'x-cache-hits': '1',
+203 silly get     'x-timer': 'S1496841051.752016,VS0,VE24',
+203 silly get     vary: 'Accept-Encoding' } ]
+204 verbose etag https://registry.npmjs.org/sleep from cache
+205 verbose get saving sleep to C:\Users\lxxne\AppData\Roaming\npm-cache\registry.npmjs.org\sleep\.cache.json
+206 verbose correctMkdir C:\Users\lxxne\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+207 silly addNameTag next cb for sleep with tag latest
+208 silly addNamed sleep@5.1.1
+209 verbose addNamed "5.1.1" is a plain semver version for sleep
+210 silly cache afterAdd sleep@5.1.1
+211 verbose afterAdd C:\Users\lxxne\AppData\Roaming\npm-cache\sleep\5.1.1\package\package.json not in flight; writing
+212 verbose correctMkdir C:\Users\lxxne\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+213 verbose afterAdd C:\Users\lxxne\AppData\Roaming\npm-cache\sleep\5.1.1\package\package.json written
+214 silly install resolved [ { name: 'sleep',
+214 silly install resolved     version: '5.1.1',
+214 silly install resolved     main: 'index.js',
+214 silly install resolved     description: 'Add sleep() and usleep() to nodejs',
+214 silly install resolved     homepage: 'http://github.com/erikdubbelboer/node-sleep',
+214 silly install resolved     author: { name: 'Erik Dubbelboer', email: 'erik@dubbelboer.com' },
+214 silly install resolved     license: 'MIT',
+214 silly install resolved     scripts: { test: 'mocha', install: 'node-gyp rebuild' },
+214 silly install resolved     engines: { node: '>=0.8.0' },
+214 silly install resolved     keywords: [ 'sleep', 'usleep' ],
+214 silly install resolved     repository:
+214 silly install resolved      { type: 'git',
+214 silly install resolved        url: 'git+https://github.com/erikdubbelboer/node-sleep.git' },
+214 silly install resolved     dependencies: { nan: '>=2.5.1' },
+214 silly install resolved     devDependencies: { mocha: '^3.0.2' },
+214 silly install resolved     gypfile: true,
+214 silly install resolved     gitHead: '156e7d85c12263561934348ffd19b01c623f9e8c',
+214 silly install resolved     bugs: { url: 'https://github.com/erikdubbelboer/node-sleep/issues' },
+214 silly install resolved     _id: 'sleep@5.1.1',
+214 silly install resolved     _shasum: '878fa1d44d08eeb0f26fb2018ef8629eb1a3ab94',
+214 silly install resolved     _from: 'sleep@latest',
+214 silly install resolved     _npmVersion: '1.4.28',
+214 silly install resolved     _npmUser: { name: 'erikdubbelboer', email: 'erik@dubbelboer.com' },
+214 silly install resolved     maintainers: [ [Object] ],
+214 silly install resolved     dist:
+214 silly install resolved      { shasum: '878fa1d44d08eeb0f26fb2018ef8629eb1a3ab94',
+214 silly install resolved        tarball: 'https://registry.npmjs.org/sleep/-/sleep-5.1.1.tgz' },
+214 silly install resolved     _npmOperationalInternal:
+214 silly install resolved      { host: 'packages-18-east.internal.npmjs.com',
+214 silly install resolved        tmp: 'tmp/sleep-5.1.1.tgz_1491620875703_0.4401540560647845' },
+214 silly install resolved     directories: {},
+214 silly install resolved     _resolved: 'https://registry.npmjs.org/sleep/-/sleep-5.1.1.tgz',
+214 silly install resolved     readme: 'ERROR: No README data found!' } ]
+215 info install sleep@5.1.1 into D:\GitLibrary\BIMServer_Node\BIMServer-Node
+216 info installOne sleep@5.1.1
+217 verbose installOne of sleep to D:\GitLibrary\BIMServer_Node\BIMServer-Node not in flight; installing
+218 verbose correctMkdir C:\Users\lxxne\AppData\Roaming\npm-cache\_locks correctMkdir not in flight; initializing
+219 verbose lock using C:\Users\lxxne\AppData\Roaming\npm-cache\_locks\sleep-d16368295b8a6e61.lock for D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\sleep
+220 silly install write writing sleep 5.1.1 to D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\sleep
+221 verbose unbuild node_modules\sleep
+222 silly gentlyRm D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\sleep is being purged from base D:\GitLibrary\BIMServer_Node\BIMServer-Node
+223 verbose gentlyRm don't care about contents; nuking D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\sleep
+224 verbose tar unpack C:\Users\lxxne\AppData\Roaming\npm-cache\sleep\5.1.1\package.tgz
+225 verbose tar unpacking to D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\sleep
+226 silly gentlyRm D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\sleep is being purged
+227 verbose gentlyRm don't care about contents; nuking D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\sleep
+228 silly gunzTarPerm modes [ '777', '666' ]
+229 silly gunzTarPerm extractEntry package.json
+230 silly gunzTarPerm modified mode [ 'package.json', 436, 438 ]
+231 silly gunzTarPerm extractEntry .npmignore
+232 silly gunzTarPerm modified mode [ '.npmignore', 436, 438 ]
+233 silly gunzTarPerm extractEntry README.md
+234 silly gunzTarPerm modified mode [ 'README.md', 436, 438 ]
+235 silly gunzTarPerm extractEntry test.js
+236 silly gunzTarPerm modified mode [ 'test.js', 436, 438 ]
+237 silly gunzTarPerm extractEntry index.js
+238 silly gunzTarPerm modified mode [ 'index.js', 436, 438 ]
+239 silly gunzTarPerm extractEntry LICENSE.txt
+240 silly gunzTarPerm modified mode [ 'LICENSE.txt', 436, 438 ]
+241 silly gunzTarPerm extractEntry sleep.cc
+242 silly gunzTarPerm modified mode [ 'sleep.cc', 436, 438 ]
+243 silly gunzTarPerm extractEntry binding.gyp
+244 silly gunzTarPerm modified mode [ 'binding.gyp', 436, 438 ]
+245 verbose write writing to D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\sleep\package.json
+246 info preinstall sleep@5.1.1
+247 verbose readDependencies loading dependencies from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\sleep\package.json
+248 verbose readDependencies loading dependencies from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\sleep\package.json
+249 silly install resolved []
+250 verbose about to build D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\sleep
+251 info build D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\sleep
+252 info linkStuff sleep@5.1.1
+253 silly linkStuff sleep@5.1.1 has D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules as its parent node_modules
+254 verbose linkBins sleep@5.1.1
+255 verbose linkMans sleep@5.1.1
+256 verbose rebuildBundles sleep@5.1.1
+257 info install sleep@5.1.1
+258 verbose unsafe-perm in lifecycle true
+259 info sleep@5.1.1 Failed to exec install script
+260 verbose unlock done using C:\Users\lxxne\AppData\Roaming\npm-cache\_locks\sleep-d16368295b8a6e61.lock for D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\sleep
+261 verbose stack Error: sleep@5.1.1 install: `node-gyp rebuild`
+261 verbose stack Exit status 1
+261 verbose stack     at EventEmitter.<anonymous> (C:\Program Files\nodejs\node_modules\npm\lib\utils\lifecycle.js:217:16)
+261 verbose stack     at emitTwo (events.js:87:13)
+261 verbose stack     at EventEmitter.emit (events.js:172:7)
+261 verbose stack     at ChildProcess.<anonymous> (C:\Program Files\nodejs\node_modules\npm\lib\utils\spawn.js:24:14)
+261 verbose stack     at emitTwo (events.js:87:13)
+261 verbose stack     at ChildProcess.emit (events.js:172:7)
+261 verbose stack     at maybeClose (internal/child_process.js:829:16)
+261 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:211:5)
+262 verbose pkgid sleep@5.1.1
+263 verbose cwd D:\GitLibrary\BIMServer_Node\BIMServer-Node
+264 error Windows_NT 10.0.14393
+265 error argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "sleep"
+266 error node v4.6.0
+267 error npm  v2.15.9
+268 error code ELIFECYCLE
+269 error sleep@5.1.1 install: `node-gyp rebuild`
+269 error Exit status 1
+270 error Failed at the sleep@5.1.1 install script 'node-gyp rebuild'.
+270 error This is most likely a problem with the sleep package,
+270 error not with npm itself.
+270 error Tell the author that this fails on your system:
+270 error     node-gyp rebuild
+270 error You can get information on how to open an issue for this project with:
+270 error     npm bugs sleep
+270 error Or if that isn't available, you can get their info via:
+270 error
+270 error     npm owner ls sleep
+270 error There is likely additional logging output above.
+271 verbose exit [ 1, true ]
+272 verbose unbuild node_modules\sleep
+273 info preuninstall sleep@5.1.1
+274 info uninstall sleep@5.1.1
+275 verbose unbuild rmStuff sleep@5.1.1 from D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules
+276 info postuninstall sleep@5.1.1
+277 silly gentlyRm D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\sleep is being purged from base D:\GitLibrary\BIMServer_Node\BIMServer-Node
+278 verbose gentlyRm don't care about contents; nuking D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\sleep
+279 silly vacuum-fs purging D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules\sleep
+280 silly vacuum-fs quitting because other entries in D:\GitLibrary\BIMServer_Node\BIMServer-Node\node_modules

@@ -72,6 +72,20 @@ app.get('/getRevisionSummary', function(req,res,next){
   res.render('pages/checkin',{moduleName:["../partials/getRevisionSummary"],messageUserType:req.session.userType});
 });
 
+// //Test 
+// var i =0;
+// var mess = "hello iot6";
+// while(i<5){
+//   i+=1;
+//   mess+="fff";
+
+// }
+// console.log(mess);
+// app.get('/iot', function(req,res,next){
+//   res.send(mess);
+// });
+ 
+
 
 // POST Requests
 app.post('/login', api.AuthInterface.login,api.AuthInterface.getLoggedInUser);

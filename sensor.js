@@ -1,5 +1,5 @@
 var mqtt = require('mqtt')
-var client  = mqtt.connect('tcp://broker.mqttdashboard.com:1883')//mqtt://test.mosquitto.org
+var client  = mqtt.connect('mqtt://127.0.0.1:1884')//mqtt://test.mosquitto.org
 var async = require('async');
  
 

@@ -1,0 +1,24 @@
+<html>
+<head>
+  <title>test Ws mqtt.js</title>
+</head>
+<body>
+<script src="./browserMqtt.js"></script>
+<script>
+
+var client = mqtt.connect('ws://127.0.0.1:3000'); // you add a ws:// url here
+
+client.on('connect', function () {
+  client.subscribe('myHome/temperature');
+  
+});
+
+client.on("message", function (topic, payload) {
+    console.log([topic, payload].join(": "));
+    //client.end();
+});
+
+
+</script>
+</body>
+</html>

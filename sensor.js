@@ -1,4 +1,5 @@
 var mqtt = require('mqtt')
+//NB:Change ip when sensor is from cloud;
 var client  = mqtt.connect('mqtt://127.0.0.1:1884')//mqtt://test.mosquitto.org
 var async = require('async');
  
@@ -12,11 +13,11 @@ async.whilst(
         count++;
         setTimeout(function () {
             callback(null, count);
-        }, 1000);
-        console.log('test');
-        var temperature = (Math.random()*30).toFixed(2);
+        }, 2000);
+        var temperature = (Math.random()*60).toFixed(2);
         //Number is not accepted. String is accept. (Json, xml may also ok)
-        client.publish('myHome/temperature', temperature.toString());
+        client.publish('myHome/temperature', temperature.toString(),{qos:1,retain:true});
+        console.log("temperature: "+temperature);
 
     },
     function (err, n) {

@@ -1,24 +1,114 @@
 <html>
 <head>
   <title>test Ws mqtt.js</title>
+  <!-- Load browserMQTT  -->
+  <script src="./dependencies/browserMqtt.js"></script>
+  <!-- Load c3.css -->
+  <link href="./dependencies/c3/c3.css" rel="stylesheet">
+  <!-- Load d3.js and c3.js -->
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script src="./dependencies/c3/c3.min.js"></script>
+  <script>
+    //js functions are depend on DOM. So we run js after DOM are loaded.
+    window.onload=function(){
+
+    var client = mqtt.connect('ws://127.0.0.1:3000'); // you add a ws:// url here ws means: WebSocket
+    var temperatureArray_line=['temperature'];
+    var temperatureArray_gauge=['temperature'];
+    //Create c3 chart1
+    var chart_line = c3.generate({
+        bindto: '#chart_line',
+        data: {
+          columns: [temperatureArray_line]
+        },
+        zoom: {
+            enabled: true,
+            rescale:true
+        }
+    });
+    //Create c3 chart1
+    var chart_gauge = c3.generate({
+        bindto: '#chart_gauge',
+        data: {
+            columns: [temperatureArray_gauge],
+            type: 'gauge',
+            // onclick: function (d, i) { console.log("onclick", d, i); },
+            // onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+            // onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+        },
+        legend: {
+            show: true
+        },        
+        gauge: {
+           label: {
+               format: function(value, ratio) {
+                   return value+"°C";
+               },
+               show: true // to turn off the min/max labels.
+           },
+       //Put actual temperature range here   
+       min: 0, // 0 is default, //can handle negative min e.g. vacuum / voltage / current flow / rate of change
+       max: 60, // 100 is default
+       //units: ' c',
+       width: 39 // for adjusting arc thickness
+        },
+        color: {
+            pattern: [ '#0066f6','#60B044','#F6C600','#F97600','#FF0000'], // the three color levels for the percentage values.
+            threshold: {
+                //unit: 'value', // percentage is default
+                max: 100, // 100 is default. (Has to be 100 other than actual min/max in the gauge)
+                values: [15, 30, 40, 50, 60]//Each value related to one color.
+            }
+        },
+        size: {
+            height: 180
+        }
+    });    
+
+
+    //IOT client
+    client.on('connect', function () {
+      client.subscribe('myHome/temperature');    
+    });
+    client.on("message", function (topic, payload) {
+        console.log([topic, payload].join(": "));
+        //Update DOM
+        changeTemperature(payload.toString());
+        //Update chart value
+        temperatureArray_line.push(payload.toString());//Normal chart need a list of updating value
+        temperatureArray_gauge[1]=parseInt(payload);//gauge chart just need one updating value
+        //Runtime load chart value
+        loadChart_line(temperatureArray_line);
+        loadChart_gauge(temperatureArray_gauge);
+        //client.end();
+    });
+
+
+    function changeTemperature(value){
+      document.getElementById('p').innerHTML=value;
+    };
+
+    function loadChart_line(data){
+      chart_line.load({
+        columns: [data]
+      });
+      };
+
+    function loadChart_gauge(data){
+      chart_gauge.load({
+        columns: [data]
+      });  
+      };
+
+
+    };
+    
+  </script>
+
 </head>
 <body>
-<script src="./browserMqtt.js"></script>
-<script>
-
-var client = mqtt.connect('ws://127.0.0.1:3000'); // you add a ws:// url here
-
-client.on('connect', function () {
-  client.subscribe('myHome/temperature');
-  
-});
-
-client.on("message", function (topic, payload) {
-    console.log([topic, payload].join(": "));
-    //client.end();
-});
-
-
-</script>
+  <label>Temperature :</label><span id="p"> value</span >
+  <div id="chart_line"></div>
+  <div id="chart_gauge"></div>
 </body>
 </html>

@@ -21,6 +21,7 @@ var cookieParser = require('cookie-parser'); // the session is stored in a cooki
 var ProgressBar = require('progress');
 var https = require('https');
 var neo4j = require("neo4j-driver").v1;
+// Change the password if needed
 var driver = neo4j.driver("bolt://localhost", neo4j.auth.basic("neo4j", "250daowohao"));
 var session = driver.session();
 
@@ -346,7 +347,7 @@ var ServiceInterface = {
     },
 
 
-    //Download option2: using direct HTTP request. Data response is json. It has better ability when processing large files.
+    //Download option2: using direct HTTP request. Data response is json. It has better ability when processing large files. We used this optiom because IT IS FASTER
     downloadServlet:function(req, res, next) {
         var data = {token:client.token,topicId:res.locals.topicId,serializerOid:res.locals.serializerOid};
         var url = `http://localhost:8082/download?token=${data.token}&serializerOid=${data.serializerOid}]&topicId=${data.topicId}`;
@@ -1457,7 +1458,7 @@ var ServiceInterface = {
                 });
 
 */
- 			 
+
 exports.AuthInterface = AuthInterface;
 exports.ServiceInterface = ServiceInterface;
 exports.PluginInterface = PluginInterface;

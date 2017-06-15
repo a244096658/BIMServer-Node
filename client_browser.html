@@ -68,7 +68,7 @@
 
     //IOT client
     client.on('connect', function () {
-      client.subscribe('myHome/temperature');    
+      client.subscribe('myHome/#'); 
     });
     client.on("message", function (topic, payload) {
         console.log([topic, payload].join(": "));

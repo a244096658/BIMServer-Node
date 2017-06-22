@@ -359,23 +359,31 @@ var ServiceInterface = {
                         IFCEntitiesArray.push(IFCData.objects[i]);
                     }
                 };
-                //Rename ifcentity's name if they dont have a name defined
+                /*Process ifcentity name: 
+                    1. Rename ifcentity's name as ifcgroup_index if they dont have a name defined
+                    2. Replace backslash \ to underscore _.
+                */
                 var index=0;
+                var IFCGroupUpdate="";
                 for(var e in IFCEntitiesArray){
                     if(IFCEntitiesArray[e].Name===null || IFCEntitiesArray[e].Name===undefined || typeof IFCEntitiesArray[e].Name==="undefined" ||IFCEntitiesArray[e].Name.length===0 || IFCEntitiesArray[e].Name.replace(/\s/g,'').length===0 ){
-                        index+=1;
+                        if(IFCGroupUpdate==="" || IFCEntitiesArray[e]._t===IFCGroupUpdate ){
+                            IFCGroupUpdate=IFCEntitiesArray[e]._t;
+                            index+=1;
+                        }
+                        else if(IFCEntitiesArray[e]._t!==IFCGroupUpdate){
+                            IFCGroupUpdate=IFCEntitiesArray[e]._t;
+                            index=1;
+                        }
                         IFCEntitiesArray[e].Name=`${IFCparameterMapping[IFCEntitiesArray[e]._t]}_${index}`;
-                    };
+                    }
+                    // else if(IFCEntitiesArray[e].Name.match(/\\/)){
+                    //     IFCEntitiesArray[e].Name.replace(/\\/g,"_");
+                    // }
                 };
-
                 //res.render('pages/checkin',{IFCEntities:IFCData,moduleName:["../partials/getRevisionSummary"],messageUserType:req.session.userType});
                 res.locals.IFCEntitiesArray=IFCEntitiesArray;
                 res.locals.IFCRelationshipsArray=IFCRelationshipsArray;
-                //Write all downloaded IFCData into txt for backup purpose.
-                // fs.writeFile(path.join(__dirname,'../public','IFCData.txt'),JSON.stringify(IFCData),function(err){
-                //     console.log(err);
-                // });
-
                 //IFCEntitiesOidArray include all IFCEntities oid.
                 var IFCEntitiesOidArray=[];
                 for(var i in IFCEntitiesArray){

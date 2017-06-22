@@ -1,149 +1,226 @@
 
-//template
-    var username = req.body.username;
-    var bimToken = req.body.token;
+var neo4j = require("neo4j-driver").v1;
+// Change the password if needed
+var driver = neo4j.driver("bolt://localhost", neo4j.auth.basic("neo4j", "250daowohao"));
+var session = driver.session();
 
+/* IOT configuration.
+  1. This name in MATCH can be guid. When bimsurfer component is clicked, guid is fired.
+  2. Connect as: ifcEntity <--> temperature <--> sensorId
+  3. During subscribion, click a component it will check downstream if has IOT or not.
+  4. In publish. Give sensor as a object has properties {name:temperature,id:001}. Also make 
+     auto-generate topicId for publish.
 
-    var url = "http://" + bimConf.domain + ":" + bimConf.port + "/json";
-    var error = '';
-    var result = {};
-    request({
-        url: url,
-        method: "POST",
-        json: true,
-        headers: {
-            "content-type": "application/json",
-            accept: 'application/json, text/javascript, */*; q=0.01'
-        },
-        body: {
-            "token" : bimToken,            
-            "request" : {
-                "interface" : "ServiceInterface",
-                "method" : "getUserByUserName",
-                "parameters":{
-                    username : username
-                }
-            }
-        }
-    }, function(err, resp, body) {
-        console.log("getting User by name from BIM Server...");
-        console.log(err);
-        error = err;
+*/
+var query2="MATCH (s:Space{ name: 'A204' }),(p:Project { name: '0001' }), path = shortestPath((s)-[*..15]-(p)) RETURN path";
+
+session
+    .run(query2)
+    .then(function(results){
+        //result.msg = "success";
+        //result.responseData = results.records;
+        //res.json(result);
+        var path = results.records[0]._fields[0].segments;
+        // console.log(path.length);
+        // var node1 = path[0].start.properties.name;
+        // var node2 = path[0].end.properties.name;
+        // var node3 = path[1].end.properties.name;
+        // var node4 = path[2].end.properties.name;
+        // var node5 = path[3].end.properties.name;
+        // var topicPath = `${node5}/${node4}/${node3}/${node2}/${node1}`
         
-        if (!err && resp.statusCode == 200) {
-            result.response = body;
-            result.msg = 'success';
+        //topicPath is : project/site/building/floor/space/temperature/sensor
+        var topicArray=[];
+        for(var i=path.length-1;i>=0;i+=-1){
+          if(i>0){
+            topicArray.push(path[i].end.properties.name);
+          }
+          else if(i===0){
+            topicArray.push(path[i].end.properties.name);
+            topicArray.push(path[i].start.properties.name);
+          }
         }
-        else{
-            result.response = error;
-            result.msg = 'error';
-        }
-        res.json(result);
+        var topicPath=topicArray.join("/");
+        console.log(topicPath);
+        session.close();
+    })
+    .catch(function(error) {
+        console.log(error);
+        result.msg = "error";
+        // result.responseData = error;
+        // res.json(result);
     });
 
+//session.close();
 
-//getAllRevisionsOfProject
-var bimToken = req.body.token;
-var poid = req.body.poid;
-{
-  "token" : bimToken,
-  "request": {
-    "interface": "ServiceInterface", 
-    "method": "getAllRevisionsOfProject", 
-    "parameters": {
-      "poid": poid
-    }
-  }
-}
 
-//getProjectByPoid
-var bimToken = req.body.token;
-var poid = res.locals.poid;
-{
-  "token" : bimToken,    
-  "request": {
-    "interface": "ServiceInterface", 
-    "method": "getProjectByPoid", 
-    "parameters": {
-      "poid":poid 
-    }
-  }
-}
 
-//getRevisionSummary
-var bimToken = req.body.token;
-var roid = res.locals.roid;
-{
-  "token" : bimToken,    
-  "request": {
-    "interface": "ServiceInterface", 
-    "method": "getRevisionSummary", 
-    "parameters": {
-      "roid": roid
-    }
-  }
-}
 
-//download
-var bimToken = req.body.token;
-var roids = [res.locals.roid];
-var query = queryString;
-var serializerOid=res.locals.serializerOid;
-var sync=false;
-{
-  "token" : bimToken,
-  "request": {
-    "interface": "ServiceInterface", 
-    "method": "download", 
-    "parameters": {
-      "roids": roids,
-      "query": query,
-      "serializerOid": serializerOid,
-      "sync": sync
-    }
-  }
-}
-//cleanupLongAction
-var bimToken = req.body.token;
-var topicId=res.locals.topicId;
-{
-  "token" : bimToken,
-  "request": {
-    "interface": "ServiceInterface", 
-    "method": "cleanupLongAction", 
-    "parameters": {
-      "topicId": 
-    }
-  }
-}
 
-//getSerializerByPluginClassName
-var bimToken = req.body.token;
-var pluginClassName="org.bimserver.serializers.JsonStreamingSerializerPlugin";
-{
-  "token" : bimToken,
-  "request": {
-    "interface": "PluginInterface", 
-    "method": "getSerializerByPluginClassName", 
-    "parameters": {
-      "pluginClassName": pluginClassName
-    }
-  }
-}
 
-//getProgress
-var bimToken = req.body.token;
-var topicId=res.locals.topicId;
-{
-  "token" : bimToken,
-  "request": {
-    "interface": "NotificationRegistryInterface", 
-    "method": "getProgress", 
-    "parameters": {
-      "topicId": topicId
-    }
-  }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//template
+//     var username = req.body.username;
+//     var bimToken = req.body.token;
+
+
+//     var url = "http://" + bimConf.domain + ":" + bimConf.port + "/json";
+//     var error = '';
+//     var result = {};
+//     request({
+//         url: url,
+//         method: "POST",
+//         json: true,
+//         headers: {
+//             "content-type": "application/json",
+//             accept: 'application/json, text/javascript, */*; q=0.01'
+//         },
+//         body: {
+//             "token" : bimToken,            
+//             "request" : {
+//                 "interface" : "ServiceInterface",
+//                 "method" : "getUserByUserName",
+//                 "parameters":{
+//                     username : username
+//                 }
+//             }
+//         }
+//     }, function(err, resp, body) {
+//         console.log("getting User by name from BIM Server...");
+//         console.log(err);
+//         error = err;
+        
+//         if (!err && resp.statusCode == 200) {
+//             result.response = body;
+//             result.msg = 'success';
+//         }
+//         else{
+//             result.response = error;
+//             result.msg = 'error';
+//         }
+//         res.json(result);
+//     });
+
+
+// //getAllRevisionsOfProject
+// var bimToken = req.body.token;
+// var poid = req.body.poid;
+// {
+//   "token" : bimToken,
+//   "request": {
+//     "interface": "ServiceInterface", 
+//     "method": "getAllRevisionsOfProject", 
+//     "parameters": {
+//       "poid": poid
+//     }
+//   }
+// }
+
+// //getProjectByPoid
+// var bimToken = req.body.token;
+// var poid = res.locals.poid;
+// {
+//   "token" : bimToken,    
+//   "request": {
+//     "interface": "ServiceInterface", 
+//     "method": "getProjectByPoid", 
+//     "parameters": {
+//       "poid":poid 
+//     }
+//   }
+// }
+
+// //getRevisionSummary
+// var bimToken = req.body.token;
+// var roid = res.locals.roid;
+// {
+//   "token" : bimToken,    
+//   "request": {
+//     "interface": "ServiceInterface", 
+//     "method": "getRevisionSummary", 
+//     "parameters": {
+//       "roid": roid
+//     }
+//   }
+// }
+
+// //download
+// var bimToken = req.body.token;
+// var roids = [res.locals.roid];
+// var query = queryString;
+// var serializerOid=res.locals.serializerOid;
+// var sync=false;
+// {
+//   "token" : bimToken,
+//   "request": {
+//     "interface": "ServiceInterface", 
+//     "method": "download", 
+//     "parameters": {
+//       "roids": roids,
+//       "query": query,
+//       "serializerOid": serializerOid,
+//       "sync": sync
+//     }
+//   }
+// }
+// //cleanupLongAction
+// var bimToken = req.body.token;
+// var topicId=res.locals.topicId;
+// {
+//   "token" : bimToken,
+//   "request": {
+//     "interface": "ServiceInterface", 
+//     "method": "cleanupLongAction", 
+//     "parameters": {
+//       "topicId": 
+//     }
+//   }
+// }
+
+// //getSerializerByPluginClassName
+// var bimToken = req.body.token;
+// var pluginClassName="org.bimserver.serializers.JsonStreamingSerializerPlugin";
+// {
+//   "token" : bimToken,
+//   "request": {
+//     "interface": "PluginInterface", 
+//     "method": "getSerializerByPluginClassName", 
+//     "parameters": {
+//       "pluginClassName": pluginClassName
+//     }
+//   }
+// }
+
+// //getProgress
+// var bimToken = req.body.token;
+// var topicId=res.locals.topicId;
+// {
+//   "token" : bimToken,
+//   "request": {
+//     "interface": "NotificationRegistryInterface", 
+//     "method": "getProgress", 
+//     "parameters": {
+//       "topicId": topicId
+//     }
+//   }
+// }
 
 //
 

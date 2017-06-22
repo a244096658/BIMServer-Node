@@ -451,6 +451,7 @@ var ServiceInterface = {
  }
 
  var Neo4j={
+
      //Origin function for creating nodes/labels/rels/deleting duplicated rels.
      batchMerge:function(req, res, next) {
         var batchNodesArray=[];
@@ -522,7 +523,7 @@ var ServiceInterface = {
                                 RelatingName =key;
                             };
                         };
-                            if(typeof RelatedName != 'undefined' &&typeof RelatingName != 'undefined'&&Array.isArray(res.locals.IFCRelationshipsArray[i][RelatedName])){
+                            if(RelatedName && RelatingName && Array.isArray(IFCRelSubArray[i][RelatedName]) && IFCRelSubArray[i][RelatedName] && IFCRelSubArray[i][RelatingName]){
                                 for(var j in res.locals.IFCRelationshipsArray[i][RelatedName]){
                                     //Check if the Related/Relating object are belong to IFCEntities.
                                     if(res.locals.IFCEntitiesOidArray.indexOf(res.locals.IFCRelationshipsArray[i][RelatedName][j])!==-1&&res.locals.IFCEntitiesOidArray.indexOf(res.locals.IFCRelationshipsArray[i][RelatingName])!==-1){
@@ -557,7 +558,7 @@ var ServiceInterface = {
                                             });
                                     };
                                 };
-                            } else if(typeof RelatedName != 'undefined' &&typeof RelatingName != 'undefined'&&!Array.isArray(res.locals.IFCRelationshipsArray[i][RelatedName])){
+                            } else if(RelatedName && RelatingName && !Array.isArray(IFCRelSubArray[i][RelatedName]) && IFCRelSubArray[i][RelatedName] && IFCRelSubArray[i][RelatingName] ){
                                     //Check if the Related/Relating object are belong to IFCEntities.
                                     if(res.locals.IFCEntitiesOidArray.indexOf(res.locals.IFCRelationshipsArray[i][RelatedName])!==-1&&res.locals.IFCEntitiesOidArray.indexOf(res.locals.IFCRelationshipsArray[i][RelatingName])!==-1){
 

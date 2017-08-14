@@ -1,6 +1,6 @@
 var mosca = require('mosca')
 
-//Set backend e.g:mosquitto, mongoDB for mosca.
+//Set backend e.g:mosquitto, mongoDB for mosca.Here we set mosquitto as backend.
 var pubsubsettings = {
   type: 'mqtt',
   json: false,
@@ -9,15 +9,18 @@ var pubsubsettings = {
   port: 1883
 };
 
+var port=4000;
 var moscaSettings = {
-  port: 1884,			//mosca (mqtt) port
-  backend: pubsubsettings,	//pubsubsettings is the object we created above
+  //mosca (mqtt) port
+  port: 1884,		
+  backend: pubsubsettings,	
   //Retain the offline message in memory
   persistence: {
     factory: mosca.persistence.Memory
   },
+  //port for WebSocket.
   http: {
-    port: 3000,
+    port: port,
     bundle: true,
     static: './'
   }
@@ -26,7 +29,7 @@ var moscaSettings = {
 
 
 var server = new mosca.Server(moscaSettings);
-//This code can acheive offline/retain message. A .ldb file is created automatically.
+//This code can also acheive offline/retain message. A .ldb file is created automatically.
 // var db = new mosca.persistence.LevelUp({ path: "./mydb" });
 // db.wire(server);
 
@@ -38,17 +41,12 @@ server.on('clientConnected', function(client) {
 
 // fired when a message is received
 server.on('published', function(packet, client) {
-  console.log('Published', packet.topic, packet.payload);
+  console.log('Published', packet.topic, packet.payload.toString());
 });
 
 // fired when the mqtt server is ready
 function setup() {
-  console.log('Mosca server is up and running')
+  console.log('Mosca server is up and running on port '+port)
 };
 
-// for(var key in mosca.persistence){
-//   console.log(key);
-
-// };
-
-// console.log(mosca.persistence.getFactory());
+ 

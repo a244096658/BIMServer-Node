@@ -12,7 +12,7 @@
     //js functions are depend on DOM. So we run js after DOM are loaded.
     window.onload=function(){
 
-    var client = mqtt.connect('ws://127.0.0.1:3000'); // you add a ws:// url here ws means: WebSocket
+    var client = mqtt.connect('ws://127.0.0.1:4000'); // you add a ws:// url here ws means: WebSocket
     var temperatureArray_line=['temperature'];
     var temperatureArray_gauge=['temperature'];
     //Create c3 chart1
@@ -68,7 +68,7 @@
 
     //IOT client
     client.on('connect', function () {
-      client.subscribe('myHome/#'); 
+      client.subscribe('0001/Default/Building_1/Roof/R301/#'); 
     });
     client.on("message", function (topic, payload) {
         console.log([topic, payload].join(": "));

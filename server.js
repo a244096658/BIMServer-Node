@@ -14,8 +14,9 @@ var session = require('express-session');
 var cookieParser = require('cookie-parser'); // the session is stored in a cookie, so we use this to parse it
 var BimServerClient = require('./bimServerJS/bimserverclient');
 var base64 = require('file-base64');
+var mosca = require('mosca');
 
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 4000);
 //app.use(timeout timeout(600000));
 // use flash and session.
 app.use(express.cookieParser());
@@ -43,6 +44,16 @@ app.set('views', __dirname + '/views');
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
+//Mosca setting
+var moscaSettings = {
+  //mosca (mqtt) port
+  port: 1884,		
+  //backend: pubsubsettings,	
+  //Retain the offline message in memory
+  persistence: {
+    factory: mosca.persistence.Memory
+  }
+};
 
 // GET Requests
 app.get('/', function(req,res,next){
@@ -83,14 +94,33 @@ app.post('/addUserToProject', api.ServiceInterface.addUserToProject );
 app.post('/getUsersProjects', api.ServiceInterface.getUsersProjects);
 app.post('/checkin', api.ServiceInterface.getSuggestedDeserializerForExtension,api.ServiceInterface.checkin);
 app.post('/getRevisionSummary', api.ServiceInterface.getAllRevisionsOfProject,api.ServiceInterface.getProjectByPoid,api.ServiceInterface.getRevisionSummary,api.PluginInterface.getSerializerByPluginClassName,api.ServiceInterface.download,api.ServiceInterface.downloadServlet,api.NotificationRegistryInterface.getProgress,api.Neo4j.batchMerge3,api.Neo4j.batchLabel,api.Neo4j.batchRel,api.ServiceInterface.cleanupLongAction);//
-//Server start
 
+//create http server
 var server = http.createServer(app);
+//create mosca server 
+var moscaServer = new mosca.Server(moscaSettings);
+//Attach moscaServer onto httpServer
+moscaServer.attachHttpServer(server);
+//mosca server config
+moscaServer.on('ready', setup);
+
+moscaServer.on('clientConnected', function(client) {
+	console.log('client connected', client.id);		
+});
+// fired when a message is received
+moscaServer.on('published', function(packet, client) {
+  console.log('Published', packet.topic, packet.payload.toString());
+});
+// fired when the mqtt server is ready
+function setup() {
+  console.log('Mosca server is up and running on port '+'4000');
+};
+
+
+//http server config
 server.setTimeout(600*1000);//unit is ms. 1s = 1000ms
 server.listen(app.get('port'), function(req,res){
   console.log('Express server listening on port ' + app.get('port'));
 });
 
-// http.createServer(app).listen(app.get('port'), function(req,res){
-//   console.log('Express server listening on port ' + app.get('port'));
-// });
+
